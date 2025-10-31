@@ -29,6 +29,13 @@ C:/Users/User/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/refint/LitePrint
 C:/Users/User/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.pdb
 C:/Users/User/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.genruntimeconfig.cache
 C:/Users/User/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/ref/LitePrintApi.dll
+/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.csproj.AssemblyReference.cache
+/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.GeneratedMSBuildEditorConfig.editorconfig
+/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.AssemblyInfoInputs.cache
+/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.AssemblyInfo.cs
+/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.csproj.CoreCompileInputs.cache
+/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.MvcApplicationPartsAssemblyInfo.cs
+/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.MvcApplicationPartsAssemblyInfo.cache
 /Users/user/Desktop/printer_api/LitePrintApi/bin/Debug/net6.0/appsettings.Development.json
 /Users/user/Desktop/printer_api/LitePrintApi/bin/Debug/net6.0/appsettings.json
 /Users/user/Desktop/printer_api/LitePrintApi/bin/Debug/net6.0/LitePrintApi
@@ -44,13 +51,6 @@ C:/Users/User/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/ref/LitePrintApi
 /Users/user/Desktop/printer_api/LitePrintApi/bin/Debug/net6.0/System.Drawing.Common.dll
 /Users/user/Desktop/printer_api/LitePrintApi/bin/Debug/net6.0/System.Management.dll
 /Users/user/Desktop/printer_api/LitePrintApi/bin/Debug/net6.0/runtimes/win/lib/net6.0/System.Management.dll
-/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.csproj.AssemblyReference.cache
-/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.GeneratedMSBuildEditorConfig.editorconfig
-/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.AssemblyInfoInputs.cache
-/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.AssemblyInfo.cs
-/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.csproj.CoreCompileInputs.cache
-/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.MvcApplicationPartsAssemblyInfo.cs
-/Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/LitePrintApi.MvcApplicationPartsAssemblyInfo.cache
 /Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/staticwebassets.build.json
 /Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/staticwebassets.development.json
 /Users/user/Desktop/printer_api/LitePrintApi/obj/Debug/net6.0/scopedcss/bundle/LitePrintApi.styles.css
