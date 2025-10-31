@@ -139,13 +139,39 @@ public class PrinterService : IPrinterService
                 if (!printerFound)
                     throw new ArgumentException($"Printer '{printerName}' not found");
 
-                // Imprimir el PDF usando PowerShell con Start-Process y -Verb Print
+                // Imprimir usando Ghostscript
+                var gsPaths = new[]
+                {
+                    @"C:\Program Files\gs\gs10.04.0\bin\gswin64c.exe",
+                    @"C:\Program Files\gs\gs10.03.0\bin\gswin64c.exe",
+                    @"C:\Program Files\gs\gs10.02.1\bin\gswin64c.exe",
+                    @"C:\Program Files\gs\gs10.01.2\bin\gswin64c.exe",
+                    @"C:\Program Files (x86)\gs\gs10.04.0\bin\gswin32c.exe",
+                    @"C:\Program Files (x86)\gs\gs10.03.0\bin\gswin32c.exe",
+                    @"C:\Program Files (x86)\gs\gs10.02.1\bin\gswin32c.exe",
+                    @"C:\Program Files (x86)\gs\gs10.01.2\bin\gswin32c.exe"
+                };
+
+                string? gsPath = null;
+                foreach (var path in gsPaths)
+                {
+                    if (File.Exists(path))
+                    {
+                        gsPath = path;
+                        break;
+                    }
+                }
+
+                if (gsPath == null)
+                    throw new InvalidOperationException("Ghostscript not found. Please install Ghostscript (https://www.ghostscript.com/download/gsdnld.html)");
+
+                // Imprimir cada copia
                 for (int copy = 0; copy < copies; copy++)
                 {
                     var processInfo = new System.Diagnostics.ProcessStartInfo
                     {
-                        FileName = "powershell",
-                        Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"Start-Process -FilePath '{tempFilePath}' -Verb Print -WindowStyle Hidden\"",
+                        FileName = gsPath,
+                        Arguments = $"-dNOPAUSE -dBATCH -sDEVICE=mswinpr2 -sOutputFile=\"%printer%{printerName}\" \"{tempFilePath}\"",
                         UseShellExecute = false,
                         CreateNoWindow = true,
                         RedirectStandardOutput = true,
@@ -158,11 +184,11 @@ public class PrinterService : IPrinterService
                     {
                         await process.WaitForExitAsync();
 
-                        // Leer la salida para verificar si hubo errores
+                        // Leer errores si los hay
                         string? errorOutput = await process.StandardError.ReadToEndAsync();
-                        if (!string.IsNullOrWhiteSpace(errorOutput))
+                        if (process.ExitCode != 0 && !string.IsNullOrWhiteSpace(errorOutput))
                         {
-                            throw new InvalidOperationException($"Print error: {errorOutput}");
+                            throw new InvalidOperationException($"Ghostscript error: {errorOutput}");
                         }
                     }
 
