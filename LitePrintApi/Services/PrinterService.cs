@@ -27,7 +27,7 @@ public class PrinterService : IPrinterService
         {
             using var searcher = new ManagementObjectSearcher(
                 "SELECT Name, Default, WorkOffline, PrinterStatus FROM Win32_Printer");
-            
+
             foreach (ManagementObject p in searcher.Get())
             {
                 var name = (string?)p["Name"] ?? "";
@@ -71,12 +71,12 @@ public class PrinterService : IPrinterService
         {
             using var searcher = new ManagementObjectSearcher(
                 "SELECT Name FROM Win32_Printer WHERE Default = TRUE");
-            
+
             foreach (ManagementObject p in searcher.Get())
                 return (string?)p["Name"] ?? "";
         }
         catch { }
-        
+
         return string.Empty;
     }
 
@@ -101,7 +101,7 @@ public class PrinterService : IPrinterService
             }
         }
         catch { }
-        
+
         // Fallback al MachineName si no se puede obtener el serial
         return Environment.MachineName;
     }
@@ -128,7 +128,7 @@ public class PrinterService : IPrinterService
                 // Usar WMI para verificar que la impresora existe
                 using var searcher = new ManagementObjectSearcher(
                     $"SELECT Name FROM Win32_Printer WHERE Name = '{printerName.Replace("'", "''")}'");
-                
+
                 var printerFound = false;
                 foreach (ManagementObject printer in searcher.Get())
                 {
@@ -152,7 +152,7 @@ public class PrinterService : IPrinterService
                     };
 
                     using var process = System.Diagnostics.Process.Start(processInfo);
-                    
+
                     if (copy < copies - 1)
                         await Task.Delay(1000); // Esperar entre copias
                 }
@@ -171,7 +171,8 @@ public class PrinterService : IPrinterService
         }
         catch (Exception)
         {
-            return false;
+            // Propagar la excepción para que el endpoint pueda capturarla y devolver el mensaje
+            throw;
         }
     }
 }
