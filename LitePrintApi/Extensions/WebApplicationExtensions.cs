@@ -19,21 +19,28 @@ public static class WebApplicationExtensions
 
         app.MapPost("/print", async (PrintRequest request, IPrinterService printerService) =>
         {
-            if (string.IsNullOrWhiteSpace(request.Base64Pdf))
-                return Results.BadRequest(new { error = "Base64Pdf is required" });
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request.Base64Pdf))
+                    return Results.BadRequest(new { error = "Base64Pdf is required" });
 
-            if (string.IsNullOrWhiteSpace(request.Printer))
-                return Results.BadRequest(new { error = "Printer is required" });
+                if (string.IsNullOrWhiteSpace(request.Printer))
+                    return Results.BadRequest(new { error = "Printer is required" });
 
-            if (request.Copies < 1)
-                return Results.BadRequest(new { error = "Copies must be at least 1" });
+                if (request.Copies < 1)
+                    return Results.BadRequest(new { error = "Copies must be at least 1" });
 
-            bool success = await printerService.PrintPdfAsync(request.Printer, request.Base64Pdf, request.Copies, request.RemoveMargins);
+                bool success = await printerService.PrintPdfAsync(request.Printer, request.Base64Pdf, request.Copies, request.RemoveMargins);
 
-            if (!success)
-                return Results.StatusCode(500);
+                if (!success)
+                    return Results.Json(new { error = "Failed to send print job" }, statusCode: 500);
 
-            return Results.Ok(new { message = "Print job sent successfully" });
+                return Results.Ok(new { message = "Print job sent successfully" });
+            }
+            catch (Exception ex)
+            {
+                return Results.Json(new { error = "Internal server error", details = ex.Message }, statusCode: 500);
+            }
         });
 
         return app;

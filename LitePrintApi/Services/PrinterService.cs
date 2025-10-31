@@ -111,7 +111,10 @@ public class PrinterService : IPrinterService
         try
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return false;
+            {
+                // Intentar método alternativo para macOS/Linux si es necesario
+                throw new PlatformNotSupportedException("Printing is only supported on Windows");
+            }
 
             // Decodificar base64 a bytes
             byte[] pdfBytes = Convert.FromBase64String(base64Pdf);
@@ -122,7 +125,7 @@ public class PrinterService : IPrinterService
 
             try
             {
-                // Usar WMI para imprimir el PDF en la impresora específica
+                // Usar WMI para verificar que la impresora existe
                 using var searcher = new ManagementObjectSearcher(
                     $"SELECT Name FROM Win32_Printer WHERE Name = '{printerName.Replace("'", "''")}'");
                 
@@ -134,7 +137,7 @@ public class PrinterService : IPrinterService
                 }
 
                 if (!printerFound)
-                    return false;
+                    throw new ArgumentException($"Printer '{printerName}' not found");
 
                 // Usar Adobe Reader o el visor PDF predeterminado para imprimir
                 for (int copy = 0; copy < copies; copy++)
@@ -166,7 +169,7 @@ public class PrinterService : IPrinterService
                 });
             }
         }
-        catch
+        catch (Exception)
         {
             return false;
         }
