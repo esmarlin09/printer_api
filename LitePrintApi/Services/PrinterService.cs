@@ -139,23 +139,91 @@ public class PrinterService : IPrinterService
                 if (!printerFound)
                     throw new ArgumentException($"Printer '{printerName}' not found");
 
-                // Usar Adobe Reader o el visor PDF predeterminado para imprimir
-                for (int copy = 0; copy < copies; copy++)
+                // Intentar múltiples métodos de impresión
+                var printMethods = new[]
                 {
-                    var processInfo = new System.Diagnostics.ProcessStartInfo
+                    // Método 1: Usar PowerShell con Start-Process -Verb PrintTo
+                    new Action(() =>
                     {
-                        FileName = tempFilePath,
-                        Verb = "PrintTo",
-                        Arguments = $"\"{printerName}\"",
-                        UseShellExecute = true,
-                        WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
-                    };
+                        var psi = new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = "powershell",
+                            Arguments = $"-NoProfile -Command \"Start-Process -FilePath '{tempFilePath}' -Verb PrintTo -ArgumentList '\\\"{printerName}\\\"' -WindowStyle Hidden\"",
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true
+                        };
+                        using var process = System.Diagnostics.Process.Start(psi);
+                        process?.WaitForExit();
+                    }),
+                    // Método 2: Usar rundll32 printui.dll,PrintUIEntry
+                    new Action(() =>
+                    {
+                        var psi = new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = "rundll32.exe",
+                            Arguments = $"printui.dll,PrintUIEntry /in /n \"{printerName}\"",
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true
+                        };
+                        using var process = System.Diagnostics.Process.Start(psi);
+                        process?.WaitForExit();
+                    }),
+                    // Método 3: Usar PDFtoPrinter si está disponible
+                    new Action(() =>
+                    {
+                        var pdfToPrinterPaths = new[]
+                        {
+                            @"C:\Program Files\PDFtoPrinter\PDFtoPrinter.exe",
+                            @"C:\Program Files (x86)\PDFtoPrinter\PDFtoPrinter.exe"
+                        };
 
-                    using var process = System.Diagnostics.Process.Start(processInfo);
+                        foreach (var path in pdfToPrinterPaths)
+                        {
+                            if (File.Exists(path))
+                            {
+                                var psi = new System.Diagnostics.ProcessStartInfo
+                                {
+                                    FileName = path,
+                                    Arguments = $"\"{tempFilePath}\" \"{printerName}\"",
+                                    UseShellExecute = false,
+                                    CreateNoWindow = true
+                                };
+                                using var process = System.Diagnostics.Process.Start(psi);
+                                process?.WaitForExit(30000);
+                                return;
+                            }
+                        }
+                        throw new InvalidOperationException("No PDF printing application found");
+                    })
+                };
 
-                    if (copy < copies - 1)
-                        await Task.Delay(1000); // Esperar entre copias
+                bool printSuccessful = false;
+                foreach (var method in printMethods)
+                {
+                    try
+                    {
+                        for (int copy = 0; copy < copies; copy++)
+                        {
+                            method();
+                            if (copy < copies - 1)
+                                await Task.Delay(1000);
+                        }
+                        printSuccessful = true;
+                        break;
+                    }
+                    catch
+                    {
+                        // Intentar siguiente método
+                        continue;
+                    }
                 }
+
+                if (!printSuccessful)
+                    throw new InvalidOperationException("All print methods failed. No PDF viewer or printer utility found.");
 
                 return true;
             }
