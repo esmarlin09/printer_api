@@ -142,10 +142,12 @@ public class PrinterService : IPrinterService
                 // Imprimir usando Ghostscript
                 var gsPaths = new[]
                 {
+                    @"C:\Program Files\gs\gs10.05.0\bin\gswin64c.exe",
                     @"C:\Program Files\gs\gs10.04.0\bin\gswin64c.exe",
                     @"C:\Program Files\gs\gs10.03.0\bin\gswin64c.exe",
                     @"C:\Program Files\gs\gs10.02.1\bin\gswin64c.exe",
                     @"C:\Program Files\gs\gs10.01.2\bin\gswin64c.exe",
+                    @"C:\Program Files (x86)\gs\gs10.05.0\bin\gswin32c.exe",
                     @"C:\Program Files (x86)\gs\gs10.04.0\bin\gswin32c.exe",
                     @"C:\Program Files (x86)\gs\gs10.03.0\bin\gswin32c.exe",
                     @"C:\Program Files (x86)\gs\gs10.02.1\bin\gswin32c.exe",
