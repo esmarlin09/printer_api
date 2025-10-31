@@ -10,6 +10,7 @@ public interface IPrinterService
     List<string> GetPrinterNames();
     string GetDefaultPrinterName();
     string GetDeviceId();
+    Task<bool> PrintPdfAsync(string printerName, string base64Pdf, int copies, bool removeMargins);
 }
 
 public class PrinterService : IPrinterService
@@ -103,6 +104,72 @@ public class PrinterService : IPrinterService
         
         // Fallback al MachineName si no se puede obtener el serial
         return Environment.MachineName;
+    }
+
+    public async Task<bool> PrintPdfAsync(string printerName, string base64Pdf, int copies, bool removeMargins)
+    {
+        try
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return false;
+
+            // Decodificar base64 a bytes
+            byte[] pdfBytes = Convert.FromBase64String(base64Pdf);
+
+            // Guardar en archivo temporal
+            string tempFilePath = Path.Combine(Path.GetTempPath(), $"print_{Guid.NewGuid()}.pdf");
+            await File.WriteAllBytesAsync(tempFilePath, pdfBytes);
+
+            try
+            {
+                // Usar WMI para imprimir el PDF en la impresora específica
+                using var searcher = new ManagementObjectSearcher(
+                    $"SELECT Name FROM Win32_Printer WHERE Name = '{printerName.Replace("'", "''")}'");
+                
+                var printerFound = false;
+                foreach (ManagementObject printer in searcher.Get())
+                {
+                    printerFound = true;
+                    break;
+                }
+
+                if (!printerFound)
+                    return false;
+
+                // Usar Adobe Reader o el visor PDF predeterminado para imprimir
+                for (int copy = 0; copy < copies; copy++)
+                {
+                    var processInfo = new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = tempFilePath,
+                        Verb = "PrintTo",
+                        Arguments = $"\"{printerName}\"",
+                        UseShellExecute = true,
+                        WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
+                    };
+
+                    using var process = System.Diagnostics.Process.Start(processInfo);
+                    
+                    if (copy < copies - 1)
+                        await Task.Delay(1000); // Esperar entre copias
+                }
+
+                return true;
+            }
+            finally
+            {
+                // Intentar eliminar el archivo temporal después de un pequeño retraso
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(5000);
+                    try { File.Delete(tempFilePath); } catch { }
+                });
+            }
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
 
