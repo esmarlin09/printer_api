@@ -12,7 +12,7 @@ public static class WebApplicationExtensions
         {
             var deviceId = printerService.GetDeviceId();
             var printers = printerService.GetPrinterNames();
-            
+
             return Results.Ok(new { deviceId, printers });
         });
 
