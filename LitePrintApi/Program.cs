@@ -3,16 +3,16 @@ using LitePrintApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar Windows Service
+// Configurar Windows Service PRIMERO
 builder.Host.UseWindowsService();
-
-// Configurar URLs por defecto para el servicio
-builder.WebHost.UseUrls("http://localhost:5000");
 
 // Configurar servicios
 builder.Services.AddApplicationServices();
 
 var app = builder.Build();
+
+// Configurar URLs después de Build para evitar conflictos
+app.Urls.Add("http://localhost:5000");
 
 // Configurar middleware
 app.UseApplicationMiddleware();
@@ -20,4 +20,13 @@ app.UseApplicationMiddleware();
 // Configurar endpoints
 app.MapApplicationEndpoints();
 
-app.Run();
+try
+{
+    app.Run();
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogCritical(ex, "Application terminated unexpectedly");
+    throw;
+}
