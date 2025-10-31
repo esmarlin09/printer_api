@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "dgSpecHash": "27Yub1h55xVL+/is8PFZzyCBRYSFO6fjE/IVvy8TnnIeCohZ2qcur2rRoigEiQOuzNqiUCpZ0GlmBJTmMAM65A==",
+  "success": true,
+  "projectFilePath": "/Users/user/Desktop/printer_api/LitePrintApi/LitePrintApi.csproj",
+  "expectedPackageFiles": [
+    "/Users/user/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/Users/user/.nuget/packages/swashbuckle.aspnetcore/6.5.0/swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/swashbuckle.aspnetcore.swagger/6.5.0/swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.5.0/swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.5.0/swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/system.codedom/7.0.0/system.codedom.7.0.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/system.drawing.common/9.0.10/system.drawing.common.9.0.10.nupkg.sha512",
+    "/Users/user/.nuget/packages/system.management/7.0.2/system.management.7.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}
