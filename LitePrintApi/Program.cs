@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Drawing.Printing;
+using LitePrintApi.Models;
+using LitePrintApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+// ✅ Registrar PrinterService
+builder.Services.AddScoped<IPrinterService, PrinterService>();
+
 // ✅ Warmup no bloqueante
 builder.Services.AddHostedService<WarmupService>();
 
@@ -55,6 +60,32 @@ app.MapGet("/printers", () =>
         printers.Add(printer);
     return Results.Ok(printers);
 }).WithTags("Printers");
+
+app.MapPost("/print", async (PrintRequest request, IPrinterService printerService) =>
+{
+    try
+    {
+        if (string.IsNullOrWhiteSpace(request.Base64Pdf))
+            return Results.BadRequest(new { error = "Base64Pdf is required" });
+
+        if (string.IsNullOrWhiteSpace(request.Printer))
+            return Results.BadRequest(new { error = "Printer is required" });
+
+        if (request.Copies < 1)
+            return Results.BadRequest(new { error = "Copies must be at least 1" });
+
+        bool success = await printerService.PrintPdfAsync(request.Printer, request.Base64Pdf, request.Copies, request.RemoveMargins);
+
+        if (!success)
+            return Results.Json(new { error = "Failed to send print job" }, statusCode: 500);
+
+        return Results.Ok(new { message = "Print job sent successfully" });
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = "Internal server error", details = ex.Message }, statusCode: 500);
+    }
+}).WithTags("Print");
 
 app.Run();
 
