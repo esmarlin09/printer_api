@@ -4,10 +4,10 @@ API REST para impresión de PDFs usando Ghostscript en Windows.
 
 ## Endpoints
 
-- **GET** `/healthz` - Health check
-- **GET** `/printers` - Lista de impresoras disponibles
-- **POST** `/print` - Imprimir PDF
-- **GET** `/swagger` - Documentación API
+- **GET** `http://localhost:9005/healthz` - Health check
+- **GET** `http://localhost:9005/printers` - Lista de impresoras disponibles
+- **POST** `http://localhost:9005/print` - Imprimir PDF
+- **GET** `http://localhost:9005/swagger` - Documentación API
 
 ## Compilación y Ejecución
 
