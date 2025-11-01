@@ -176,23 +176,16 @@ public class PrinterService : IPrinterService
                         Arguments = $"-dNOPAUSE -dBATCH -sDEVICE=mswinpr2 -sOutputFile=\"%printer%{printerName}\" \"{tempFilePath}\"",
                         UseShellExecute = false,
                         CreateNoWindow = true,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
                         WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
                     };
 
                     using var process = System.Diagnostics.Process.Start(processInfo);
-                    if (process != null)
+                    if (process == null)
                     {
-                        await process.WaitForExitAsync();
-
-                        // Leer errores si los hay
-                        string? errorOutput = await process.StandardError.ReadToEndAsync();
-                        if (process.ExitCode != 0 && !string.IsNullOrWhiteSpace(errorOutput))
-                        {
-                            throw new InvalidOperationException($"Ghostscript error: {errorOutput}");
-                        }
+                        throw new InvalidOperationException("Failed to start Ghostscript process");
                     }
+
+                    await process.WaitForExitAsync();
 
                     if (copy < copies - 1)
                         await Task.Delay(1000);

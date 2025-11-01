@@ -75,16 +75,20 @@ app.MapPost("/print", (PrintRequest request, IPrinterService printerService, ILo
             return Results.BadRequest(new { error = "Copies must be at least 1" });
 
         // Iniciar impresión en segundo plano sin bloquear
+        logger.LogInformation("Iniciando impresión: Printer={Printer}, Copies={Copies}", request.Printer, request.Copies);
+
         _ = Task.Run(async () =>
         {
             try
             {
+                logger.LogInformation("Ejecutando impresión en segundo plano...");
                 await printerService.PrintPdfAsync(request.Printer, request.Base64Pdf, request.Copies, request.RemoveMargins);
+                logger.LogInformation("Impresión completada exitosamente");
             }
             catch (Exception ex)
             {
                 // Log del error pero no bloquear la respuesta
-                logger.LogError(ex, "Error en impresión en segundo plano");
+                logger.LogError(ex, "Error en impresión en segundo plano: {Error}", ex.Message);
             }
         });
 
