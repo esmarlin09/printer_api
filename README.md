@@ -16,29 +16,29 @@ API REST para impresión de PDFs usando Ghostscript en Windows.
 dotnet run --project LitePrintApi
 ```
 
-### Producción
-```bash
+### Producción - Servicio de Windows
+```powershell
+# Compilar
 dotnet publish -c Release -o C:\PrinterService
+
+# Instalar servicio (PowerShell como Administrador)
+sc.exe create LitePrintService binPath="C:\PrinterService\LitePrintApi.exe" start=auto DisplayName="LitePrint API Service"
+
+# Iniciar servicio
+sc.exe start LitePrintService
+
+# Ver estado
+sc.exe query LitePrintService
+
+# Desinstalar (si es necesario)
+sc.exe stop LitePrintService
+sc.exe delete LitePrintService
 ```
 
-### Ejecutar Minimizado
-
-Opción 1: Usar el CMD
-```cmd
-start-minimized.cmd
-```
-
-Opción 2: Crear acceso directo
-1. Crear un acceso directo a `LitePrintApi.exe`
-2. Click derecho → Propiedades
-3. En "Ejecutar" seleccionar "Minimizado"
-
-### Agregar al Inicio de Windows
-
-Para que la app inicie automáticamente con Windows:
-1. Win + R → `shell:startup`
-2. Crear acceso directo del ejecutable en esa carpeta
-3. Configurar propiedades del acceso directo para "Minimizado"
+### Notas Importantes
+- El servicio se ejecutará en `http://localhost:9005`
+- Los logs del servicio se pueden ver en el **Visor de Eventos** de Windows
+- El servicio se iniciará automáticamente con Windows
 
 ## Requisitos
 
