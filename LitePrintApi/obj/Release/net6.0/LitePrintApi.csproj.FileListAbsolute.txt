@@ -29,9 +29,3 @@
 /Users/user/Desktop/printer_api/LitePrintApi/obj/Release/net6.0/LitePrintApi.pdb
 /Users/user/Desktop/printer_api/LitePrintApi/obj/Release/net6.0/LitePrintApi.genruntimeconfig.cache
 /Users/user/Desktop/printer_api/LitePrintApi/obj/Release/net6.0/ref/LitePrintApi.dll
-/Users/user/Desktop/printer_api/LitePrintApi/bin/Release/net6.0/Microsoft.Extensions.Configuration.EnvironmentVariables.dll
-/Users/user/Desktop/printer_api/LitePrintApi/bin/Release/net6.0/Microsoft.Extensions.Configuration.UserSecrets.dll
-/Users/user/Desktop/printer_api/LitePrintApi/bin/Release/net6.0/Microsoft.Extensions.Hosting.dll
-/Users/user/Desktop/printer_api/LitePrintApi/bin/Release/net6.0/Microsoft.Extensions.Hosting.WindowsServices.dll
-/Users/user/Desktop/printer_api/LitePrintApi/bin/Release/net6.0/System.ServiceProcess.ServiceController.dll
-/Users/user/Desktop/printer_api/LitePrintApi/bin/Release/net6.0/runtimes/win/lib/net6.0/System.ServiceProcess.ServiceController.dll

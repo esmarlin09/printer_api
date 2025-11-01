@@ -3,15 +3,12 @@ using LitePrintApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar Windows Service PRIMERO
-builder.Host.UseWindowsService();
-
 // Configurar servicios
 builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
-// Configurar URLs después de Build para evitar conflictos
+// Configurar URLs
 app.Urls.Add("http://localhost:5000");
 
 // Configurar middleware
