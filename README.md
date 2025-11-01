@@ -17,6 +17,16 @@ dotnet run --project LitePrintApi
 ```
 
 ### Producción - Servicio de Windows
+
+#### Instalación Automática (Recomendado)
+```powershell
+# PowerShell como Administrador
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+cd LitePrintApi
+.\install-service.ps1
+```
+
+#### Instalación Manual
 ```powershell
 # Compilar
 dotnet publish -c Release -o C:\PrinterService
