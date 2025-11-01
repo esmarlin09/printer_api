@@ -61,7 +61,7 @@ app.MapGet("/printers", () =>
     return Results.Ok(printers);
 }).WithTags("Printers");
 
-app.MapPost("/print", async (PrintRequest request, IPrinterService printerService) =>
+app.MapPost("/print", (PrintRequest request, IPrinterService printerService, ILogger<Program> logger) =>
 {
     try
     {
@@ -74,12 +74,21 @@ app.MapPost("/print", async (PrintRequest request, IPrinterService printerServic
         if (request.Copies < 1)
             return Results.BadRequest(new { error = "Copies must be at least 1" });
 
-        bool success = await printerService.PrintPdfAsync(request.Printer, request.Base64Pdf, request.Copies, request.RemoveMargins);
+        // Iniciar impresión en segundo plano sin bloquear
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await printerService.PrintPdfAsync(request.Printer, request.Base64Pdf, request.Copies, request.RemoveMargins);
+            }
+            catch (Exception ex)
+            {
+                // Log del error pero no bloquear la respuesta
+                logger.LogError(ex, "Error en impresión en segundo plano");
+            }
+        });
 
-        if (!success)
-            return Results.Json(new { error = "Failed to send print job" }, statusCode: 500);
-
-        return Results.Ok(new { message = "Print job sent successfully" });
+        return Results.Ok(new { message = "Print job queued successfully" });
     }
     catch (Exception ex)
     {
