@@ -82,13 +82,23 @@ app.MapPost("/print", (PrintRequest request, IPrinterService printerService, ILo
             try
             {
                 logger.LogInformation("Ejecutando impresión en segundo plano...");
+                logger.LogInformation("Detalles: Printer={Printer}, Copies={Copies}, RemoveMargins={RemoveMargins}, PDFSize={Size} bytes",
+                    request.Printer, request.Copies, request.RemoveMargins,
+                    string.IsNullOrWhiteSpace(request.Base64Pdf) ? 0 : request.Base64Pdf.Length);
+
                 await printerService.PrintPdfAsync(request.Printer, request.Base64Pdf, request.Copies, request.RemoveMargins);
-                logger.LogInformation("Impresión completada exitosamente");
+
+                logger.LogInformation("✅ Impresión completada exitosamente en segundo plano");
             }
             catch (Exception ex)
             {
-                // Log del error pero no bloquear la respuesta
-                logger.LogError(ex, "Error en impresión en segundo plano: {Error}", ex.Message);
+                // Log detallado del error
+                logger.LogError(ex, "❌ ERROR en impresión en segundo plano: {Error}", ex.Message);
+                logger.LogError("StackTrace: {StackTrace}", ex.StackTrace);
+                if (ex.InnerException != null)
+                {
+                    logger.LogError("InnerException: {InnerError}", ex.InnerException.Message);
+                }
             }
         });
 

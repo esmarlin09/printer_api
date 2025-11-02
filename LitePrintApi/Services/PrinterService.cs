@@ -1,6 +1,7 @@
 using System.Management;
 using System.Runtime.InteropServices;
 using LitePrintApi.Models;
+using Microsoft.Extensions.Logging;
 
 namespace LitePrintApi.Services;
 
@@ -15,6 +16,12 @@ public interface IPrinterService
 
 public class PrinterService : IPrinterService
 {
+    private readonly ILogger<PrinterService> _logger;
+
+    public PrinterService(ILogger<PrinterService> logger)
+    {
+        _logger = logger;
+    }
     public List<PrinterInfo> GetPrinters()
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -117,15 +124,28 @@ public class PrinterService : IPrinterService
             }
 
             // Decodificar base64 a bytes
-            byte[] pdfBytes = Convert.FromBase64String(base64Pdf);
+            _logger.LogInformation("Decodificando PDF desde base64...");
+            byte[] pdfBytes;
+            try
+            {
+                pdfBytes = Convert.FromBase64String(base64Pdf);
+                _logger.LogInformation("PDF decodificado exitosamente. Tamaño: {Size} bytes", pdfBytes.Length);
+            }
+            catch (FormatException ex)
+            {
+                _logger.LogError(ex, "Error al decodificar base64: {Error}", ex.Message);
+                throw new ArgumentException($"Invalid base64 PDF format: {ex.Message}", ex);
+            }
 
             // Guardar en archivo temporal
             string tempFilePath = Path.Combine(Path.GetTempPath(), $"print_{Guid.NewGuid()}.pdf");
+            _logger.LogInformation("Guardando PDF temporal en: {Path}", tempFilePath);
             await File.WriteAllBytesAsync(tempFilePath, pdfBytes);
 
             try
             {
                 // Usar WMI para verificar que la impresora existe
+                _logger.LogInformation("Verificando existencia de impresora: {Printer}", printerName);
                 using var searcher = new ManagementObjectSearcher(
                     $"SELECT Name FROM Win32_Printer WHERE Name = '{printerName.Replace("'", "''")}'");
 
@@ -137,7 +157,11 @@ public class PrinterService : IPrinterService
                 }
 
                 if (!printerFound)
+                {
+                    _logger.LogError("Impresora no encontrada: {Printer}", printerName);
                     throw new ArgumentException($"Printer '{printerName}' not found");
+                }
+                _logger.LogInformation("Impresora encontrada: {Printer}", printerName);
 
                 // Imprimir usando Ghostscript
                 var gsPaths = new[]
@@ -155,37 +179,74 @@ public class PrinterService : IPrinterService
                 };
 
                 string? gsPath = null;
+                _logger.LogInformation("Buscando instalación de Ghostscript...");
                 foreach (var path in gsPaths)
                 {
                     if (File.Exists(path))
                     {
                         gsPath = path;
+                        _logger.LogInformation("Ghostscript encontrado en: {Path}", gsPath);
                         break;
                     }
                 }
 
                 if (gsPath == null)
+                {
+                    _logger.LogError("Ghostscript no encontrado en ninguna de las rutas conocidas");
                     throw new InvalidOperationException("Ghostscript not found. Please install Ghostscript (https://www.ghostscript.com/download/gsdnld.html)");
+                }
 
                 // Imprimir cada copia
                 for (int copy = 0; copy < copies; copy++)
                 {
+                    _logger.LogInformation("Iniciando impresión copia {Copy} de {Total}", copy + 1, copies);
+                    
                     var processInfo = new System.Diagnostics.ProcessStartInfo
                     {
                         FileName = gsPath,
                         Arguments = $"-dNOPAUSE -dBATCH -sDEVICE=mswinpr2 -sOutputFile=\"%printer%{printerName}\" \"{tempFilePath}\"",
                         UseShellExecute = false,
                         CreateNoWindow = true,
-                        WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
+                        WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
                     };
 
                     using var process = System.Diagnostics.Process.Start(processInfo);
                     if (process == null)
                     {
+                        _logger.LogError("No se pudo iniciar el proceso de Ghostscript");
                         throw new InvalidOperationException("Failed to start Ghostscript process");
                     }
 
+                    // Capturar salida estándar y error
+                    string output = await process.StandardOutput.ReadToEndAsync();
+                    string error = await process.StandardError.ReadToEndAsync();
+
                     await process.WaitForExitAsync();
+
+                    int exitCode = process.ExitCode;
+                    _logger.LogInformation("Ghostscript terminó con código de salida: {ExitCode}", exitCode);
+
+                    if (!string.IsNullOrWhiteSpace(output))
+                        _logger.LogInformation("Salida de Ghostscript: {Output}", output);
+
+                    if (!string.IsNullOrWhiteSpace(error))
+                        _logger.LogWarning("Error de Ghostscript: {Error}", error);
+
+                    if (exitCode != 0)
+                    {
+                        string errorMessage = $"Ghostscript failed with exit code {exitCode}";
+                        if (!string.IsNullOrWhiteSpace(error))
+                            errorMessage += $". Error: {error}";
+                        if (!string.IsNullOrWhiteSpace(output))
+                            errorMessage += $". Output: {output}";
+                        
+                        _logger.LogError("Error en impresión: {Error}", errorMessage);
+                        throw new InvalidOperationException(errorMessage);
+                    }
+
+                    _logger.LogInformation("Copia {Copy} impresa exitosamente", copy + 1);
 
                     if (copy < copies - 1)
                         await Task.Delay(1000);
