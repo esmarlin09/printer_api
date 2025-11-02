@@ -200,7 +200,7 @@ public class PrinterService : IPrinterService
                 for (int copy = 0; copy < copies; copy++)
                 {
                     _logger.LogInformation("Iniciando impresión copia {Copy} de {Total}", copy + 1, copies);
-                    
+
                     var processInfo = new System.Diagnostics.ProcessStartInfo
                     {
                         FileName = gsPath,
@@ -241,7 +241,7 @@ public class PrinterService : IPrinterService
                             errorMessage += $". Error: {error}";
                         if (!string.IsNullOrWhiteSpace(output))
                             errorMessage += $". Output: {output}";
-                        
+
                         _logger.LogError("Error en impresión: {Error}", errorMessage);
                         throw new InvalidOperationException(errorMessage);
                     }
