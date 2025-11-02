@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/user/Desktop/printer_api/LitePrintApi/LitePrintApi.csproj": {}
+    "/Users/user/Desktop/Dev/printer_api/LitePrintApi/LitePrintApi.csproj": {}
   },
   "projects": {
-    "/Users/user/Desktop/printer_api/LitePrintApi/LitePrintApi.csproj": {
+    "/Users/user/Desktop/Dev/printer_api/LitePrintApi/LitePrintApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/user/Desktop/printer_api/LitePrintApi/LitePrintApi.csproj",
+        "projectUniqueName": "/Users/user/Desktop/Dev/printer_api/LitePrintApi/LitePrintApi.csproj",
         "projectName": "LitePrintApi",
-        "projectPath": "/Users/user/Desktop/printer_api/LitePrintApi/LitePrintApi.csproj",
+        "projectPath": "/Users/user/Desktop/Dev/printer_api/LitePrintApi/LitePrintApi.csproj",
         "packagesPath": "/Users/user/.nuget/packages/",
-        "outputPath": "/Users/user/Desktop/printer_api/LitePrintApi/obj/",
+        "outputPath": "/Users/user/Desktop/Dev/printer_api/LitePrintApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/user/.nuget/NuGet/NuGet.Config"
@@ -41,6 +41,14 @@
             "Microsoft.Extensions.Hosting.WindowsServices": {
               "target": "Package",
               "version": "[6.0.5, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[6.1.0, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[5.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

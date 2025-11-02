@@ -5,6 +5,20 @@ using Microsoft.Extensions.Logging;
 using System.Drawing.Printing;
 using LitePrintApi.Models;
 using LitePrintApi.Services;
+using Serilog;
+using Serilog.Events;
+
+// ✅ Configurar Serilog para logging a archivo
+var logPath = Path.Combine(AppContext.BaseDirectory, "logs", "liteprint-{Date}.log");
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File(
+        path: logPath,
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30,
+        outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+        shared: true
+    )
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +26,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseWindowsService();
 builder.Host.UseContentRoot(AppContext.BaseDirectory);
 
-// ✅ Logging en Event Viewer
-builder.Logging.ClearProviders();
-builder.Logging.AddEventLog(settings => settings.SourceName = "LitePrintService");
+// ✅ Usar Serilog para logging
+builder.Host.UseSerilog();
 
 // ✅ Configurar Kestrel / URL antes del Build
 builder.WebHost.UseKestrel().UseUrls("http://0.0.0.0:9005");
@@ -52,6 +65,75 @@ app.UseSwaggerUI();
 // ✅ Endpoints simples
 app.MapGet("/health", () => Results.Ok(new { status = "ok", time = DateTimeOffset.Now }))
    .WithTags("System");
+
+app.MapGet("/logs", (ILogger<Program> logger) =>
+{
+    try
+    {
+        var logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
+        if (!Directory.Exists(logDirectory))
+        {
+            return Results.Ok(new { logs = new List<string>(), message = "No hay logs aún" });
+        }
+
+        // Obtener el archivo de log más reciente
+        var logFiles = Directory.GetFiles(logDirectory, "liteprint-*.log")
+            .OrderByDescending(f => File.GetCreationTime(f))
+            .ToList();
+
+        if (logFiles.Count == 0)
+        {
+            return Results.Ok(new { logs = new List<string>(), message = "No hay archivos de log" });
+        }
+
+        var latestLogFile = logFiles.First();
+        var logLines = new List<string>();
+
+        // Leer las últimas 500 líneas del archivo (o todas si son menos)
+        var allLines = File.ReadAllLines(latestLogFile);
+        var linesToReturn = allLines.Length > 500
+            ? allLines.Skip(allLines.Length - 500).ToArray()
+            : allLines;
+
+        return Results.Ok(new
+        {
+            file = Path.GetFileName(latestLogFile),
+            totalLines = allLines.Length,
+            showingLines = linesToReturn.Length,
+            logs = linesToReturn,
+            lastUpdated = File.GetLastWriteTime(latestLogFile)
+        });
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error al leer logs: {Error}", ex.Message);
+        return Results.Json(new { error = "Error al leer logs", details = ex.Message }, statusCode: 500);
+    }
+}).WithTags("System");
+
+app.MapGet("/logs/clear", (ILogger<Program> logger) =>
+{
+    try
+    {
+        var logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
+        if (Directory.Exists(logDirectory))
+        {
+            var logFiles = Directory.GetFiles(logDirectory, "liteprint-*.log");
+            foreach (var file in logFiles)
+            {
+                File.Delete(file);
+            }
+            logger.LogInformation("Logs eliminados");
+            return Results.Ok(new { message = "Logs eliminados correctamente", deletedFiles = logFiles.Length });
+        }
+        return Results.Ok(new { message = "No hay logs para eliminar" });
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error al eliminar logs: {Error}", ex.Message);
+        return Results.Json(new { error = "Error al eliminar logs", details = ex.Message }, statusCode: 500);
+    }
+}).WithTags("System");
 
 app.MapGet("/printers", () =>
 {
@@ -110,7 +192,19 @@ app.MapPost("/print", (PrintRequest request, IPrinterService printerService, ILo
     }
 }).WithTags("Print");
 
-app.Run();
+try
+{
+    Log.Information("Iniciando LitePrint API Service");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Error fatal al iniciar el servicio");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
 
 // ✅ HostedService para tareas no bloqueantes al iniciar
 public sealed class WarmupService : IHostedService
