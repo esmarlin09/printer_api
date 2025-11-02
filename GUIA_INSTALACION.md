@@ -13,6 +13,7 @@
 ## 🚀 PASO 1: Compilar el Proyecto
 
 ### Opción A: Desde Visual Studio o terminal
+
 ```powershell
 # Navegar a la carpeta del proyecto
 cd C:\ruta\a\printer_api\LitePrintApi
@@ -22,6 +23,7 @@ dotnet publish -c Release -o C:\PrinterService
 ```
 
 ### Opción B: Usar el script automático (más fácil)
+
 El script `install-service.ps1` ya compila automáticamente, así que puedes saltar este paso si usas la instalación automática.
 
 ---
@@ -31,21 +33,26 @@ El script `install-service.ps1` ya compila automáticamente, así que puedes sal
 ### **Opción A: Instalación Automática (Recomendada)**
 
 1. **Abrir PowerShell como Administrador:**
+
    - Presiona `Win + X`
    - Selecciona "Windows PowerShell (Administrador)" o "Terminal (Administrador)"
 
 2. **Permitir ejecución de scripts:**
+
    ```powershell
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
    ```
 
 3. **Navegar a la carpeta del proyecto:**
+
    ```powershell
    cd C:\ruta\a\printer_api\LitePrintApi
    ```
-   *(Reemplaza con tu ruta real)*
+
+   _(Reemplaza con tu ruta real)_
 
 4. **Ejecutar el script de instalación:**
+
    ```powershell
    .\install-service.ps1
    ```
@@ -62,16 +69,19 @@ El script `install-service.ps1` ya compila automáticamente, así que puedes sal
 ### **Opción B: Instalación Manual**
 
 1. **Compilar (si no lo hiciste antes):**
+
    ```powershell
    dotnet publish -c Release -o C:\PrinterService
    ```
 
 2. **Crear el servicio:**
+
    ```powershell
    sc.exe create LitePrintService binPath="C:\PrinterService\LitePrintApi.exe" start=auto DisplayName="LitePrint API Service"
    ```
 
 3. **Iniciar el servicio:**
+
    ```powershell
    sc.exe start LitePrintService
    ```
@@ -96,6 +106,7 @@ Get-Service LitePrintService
 ```
 
 **Deberías ver:**
+
 ```
 SERVICE_NAME: LitePrintService
         STATE              : 4  RUNNING
@@ -104,6 +115,7 @@ SERVICE_NAME: LitePrintService
 ### **Probar que la API responde:**
 
 Abre un navegador y ve a:
+
 - **Health Check:** http://localhost:9005/health
 - **Swagger (Documentación):** http://localhost:9005/swagger
 - **Listar Impresoras:** http://localhost:9005/printers
@@ -115,15 +127,18 @@ Abre un navegador y ve a:
 ### **Método 1: Visor de Eventos de Windows (Recomendado)**
 
 1. **Abrir el Visor de Eventos:**
+
    - Presiona `Win + R`
    - Escribe: `eventvwr.msc` y presiona Enter
    - O busca "Visor de eventos" en el menú de inicio
 
 2. **Navegar a los logs:**
+
    - En el panel izquierdo, expande: **Windows Logs**
    - Haz clic en **Application**
 
 3. **Filtrar por el servicio:**
+
    - En el panel derecho, haz clic en **"Filtrar registro actual"**
    - En "Origen del evento", busca y selecciona: **LitePrintService**
    - O busca en "Todos los eventos" escribiendo "LitePrint" en el campo de búsqueda
@@ -159,6 +174,7 @@ wevtutil qe Application /c:50 /rd:true /f:text /q:"*[System[Provider[@Name='Lite
 ## 🛠️ COMANDOS ÚTILES PARA ADMINISTRAR EL SERVICIO
 
 ### **Iniciar el servicio:**
+
 ```powershell
 sc.exe start LitePrintService
 # O
@@ -166,6 +182,7 @@ Start-Service LitePrintService
 ```
 
 ### **Detener el servicio:**
+
 ```powershell
 sc.exe stop LitePrintService
 # O
@@ -173,11 +190,13 @@ Stop-Service LitePrintService
 ```
 
 ### **Reiniciar el servicio:**
+
 ```powershell
 Restart-Service LitePrintService
 ```
 
 ### **Ver el estado:**
+
 ```powershell
 sc.exe query LitePrintService
 # O
@@ -185,6 +204,7 @@ Get-Service LitePrintService
 ```
 
 ### **Desinstalar el servicio:**
+
 ```powershell
 # Primero detener
 sc.exe stop LitePrintService
@@ -198,22 +218,26 @@ sc.exe delete LitePrintService
 ## 🔍 TROUBLESHOOTING (Solución de Problemas)
 
 ### **El servicio no inicia:**
+
 1. Verifica que .NET 6.0 Runtime esté instalado
 2. Verifica que Ghostscript esté instalado
 3. Revisa los logs en el Visor de Eventos
 4. Asegúrate de ejecutar PowerShell como Administrador
 
 ### **No puedo ver los logs:**
+
 1. Verifica que el servicio esté corriendo
 2. Busca "LitePrintService" en el Visor de Eventos
 3. Si no aparecen logs, verifica que el servicio tenga permisos para escribir en el Event Log
 
 ### **La API no responde:**
+
 1. Verifica que el servicio esté corriendo: `sc.exe query LitePrintService`
 2. Verifica que el puerto 9005 no esté bloqueado por firewall
 3. Intenta acceder desde otro navegador o herramienta como Postman
 
 ### **Error al imprimir:**
+
 1. Revisa los logs en el Visor de Eventos (Método 1 arriba)
 2. Busca eventos con nivel "Error" (rojo)
 3. Verifica que:
@@ -235,11 +259,13 @@ sc.exe delete LitePrintService
 ## 🧪 PROBAR LA IMPRESIÓN
 
 1. **Listar impresoras disponibles:**
+
    ```powershell
    Invoke-WebRequest -Uri "http://localhost:9005/printers" | Select-Object -ExpandProperty Content
    ```
 
 2. **Probar impresión (ejemplo con Postman o curl):**
+
    ```powershell
    $body = @{
        Printer = "Nombre de tu impresora"
@@ -256,4 +282,3 @@ sc.exe delete LitePrintService
 ---
 
 ¡Listo! Ahora deberías poder instalar, ejecutar y monitorear el servicio sin problemas. 🎉
-
