@@ -232,47 +232,57 @@ public class PrinterService : IPrinterService
                     // Detectar si estamos ejecutándonos como servicio
                     bool isRunningAsService = Environment.UserInteractive == false;
 
+                    System.Diagnostics.Process? process;
+
                     if (isRunningAsService)
                     {
-                        _logger.LogInformation("Ejecutándose como servicio de Windows");
-                    }
+                        _logger.LogInformation("Ejecutándose como servicio de Windows. Intentando ejecutar en sesión del usuario interactivo...");
 
-                    var processInfo = new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = gsPath,
-                        Arguments = gsArguments,
-                        UseShellExecute = false,
-                        CreateNoWindow = !isPdfVirtualPrinter, // Para PDF virtuales, puede necesitar ventana
-                        WindowStyle = isPdfVirtualPrinter ?
-                            System.Diagnostics.ProcessWindowStyle.Normal :
-                            System.Diagnostics.ProcessWindowStyle.Hidden,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        RedirectStandardInput = false,
-                        LoadUserProfile = true, // Cargar perfil de usuario
-                        WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
-                    };
+                        // Para servicios, intentar ejecutar en la sesión del usuario interactivo
+                        // Esto es especialmente importante para impresoras PDF virtuales
+                        bool showWindow = isPdfVirtualPrinter; // Mostrar ventana solo para PDF virtuales
+                        process = InteractiveProcessHelper.StartProcessInInteractiveSession(
+                            gsPath,
+                            gsArguments,
+                            _logger,
+                            showWindow);
 
-                    // Si es impresora PDF virtual y estamos como servicio, intentar ejecutar en sesión del usuario
-                    if (isPdfVirtualPrinter && isRunningAsService)
-                    {
-                        _logger.LogWarning("ADVERTENCIA: Impresora PDF virtual ejecutándose desde servicio. " +
-                            "Esto puede requerir que el servicio esté configurado para interactuar con el escritorio " +
-                            "o ejecutarse como el usuario actual.");
-
-                        // Intentar usar UseShellExecute para que use la sesión del usuario
-                        // Solo si no redirigimos la salida
-                        if (false) // Cambiar a true solo para debug
+                        if (process == null)
                         {
-                            processInfo.UseShellExecute = true;
-                            processInfo.RedirectStandardOutput = false;
-                            processInfo.RedirectStandardError = false;
-                            processInfo.CreateNoWindow = false;
-                            _logger.LogInformation("Modo alternativo: UseShellExecute activado (sin redirección de salida)");
+                            _logger.LogWarning("No se pudo ejecutar en sesión interactiva, intentando método normal...");
+                            // Fallback a método normal
+                            var processInfo = new System.Diagnostics.ProcessStartInfo
+                            {
+                                FileName = gsPath,
+                                Arguments = gsArguments,
+                                UseShellExecute = true,
+                                CreateNoWindow = !isPdfVirtualPrinter,
+                                WindowStyle = isPdfVirtualPrinter ?
+                                    System.Diagnostics.ProcessWindowStyle.Normal :
+                                    System.Diagnostics.ProcessWindowStyle.Hidden
+                            };
+                            process = System.Diagnostics.Process.Start(processInfo);
                         }
                     }
+                    else
+                    {
+                        // Ejecución normal (no servicio)
+                        var processInfo = new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = gsPath,
+                            Arguments = gsArguments,
+                            UseShellExecute = false,
+                            CreateNoWindow = !isPdfVirtualPrinter,
+                            WindowStyle = isPdfVirtualPrinter ?
+                                System.Diagnostics.ProcessWindowStyle.Normal :
+                                System.Diagnostics.ProcessWindowStyle.Hidden,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            RedirectStandardInput = false
+                        };
+                        process = System.Diagnostics.Process.Start(processInfo);
+                    }
 
-                    using var process = System.Diagnostics.Process.Start(processInfo);
                     if (process == null)
                     {
                         _logger.LogError("No se pudo iniciar el proceso de Ghostscript");
@@ -280,11 +290,28 @@ public class PrinterService : IPrinterService
                     }
 
                     _logger.LogInformation("Proceso Ghostscript iniciado (PID: {ProcessId}). Comando: {FileName} {Arguments}",
-                        process.Id, gsPath, processInfo.Arguments);
+                        process.Id, gsPath, gsArguments);
 
-                    // Leer salida de forma asíncrona mientras el proceso corre
-                    var outputTask = process.StandardOutput.ReadToEndAsync();
-                    var errorTask = process.StandardError.ReadToEndAsync();
+                    // Usar variable para evitar error en caso de que processInfo no exista
+                    using var processDisposable = process;
+
+                    // Leer salida solo si no es UseShellExecute
+                    Task<string>? outputTask = null;
+                    Task<string>? errorTask = null;
+
+                    try
+                    {
+                        if (process.StartInfo.RedirectStandardOutput)
+                        {
+                            outputTask = process.StandardOutput.ReadToEndAsync();
+                            errorTask = process.StandardError.ReadToEndAsync();
+                        }
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Si no se puede redirigir (UseShellExecute = true), continuar sin capturar salida
+                        _logger.LogInformation("No se puede capturar salida del proceso (UseShellExecute activado)");
+                    }
 
                     // Monitorear el proceso con logging periódico
                     var processStartTime = DateTime.Now;
@@ -314,9 +341,13 @@ public class PrinterService : IPrinterService
 
                     if (completedTask == processTask)
                     {
-                        _logger.LogInformation("Proceso terminó normalmente, esperando captura de salida...");
-                        await Task.WhenAll(outputTask, errorTask);
-                        _logger.LogInformation("Salida capturada completamente");
+                        _logger.LogInformation("Proceso terminó normalmente");
+                        if (outputTask != null && errorTask != null)
+                        {
+                            _logger.LogInformation("Esperando captura de salida...");
+                            await Task.WhenAll(outputTask, errorTask);
+                            _logger.LogInformation("Salida capturada completamente");
+                        }
                     }
                     else
                     {
@@ -354,8 +385,8 @@ public class PrinterService : IPrinterService
                         throw new TimeoutException(errorMsg);
                     }
 
-                    string output = await outputTask;
-                    string error = await errorTask;
+                    string output = outputTask != null ? await outputTask : string.Empty;
+                    string error = errorTask != null ? await errorTask : string.Empty;
                     int exitCode = process.ExitCode;
 
                     _logger.LogInformation("Ghostscript terminó con código de salida: {ExitCode}", exitCode);
