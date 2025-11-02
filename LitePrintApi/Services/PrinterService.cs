@@ -196,22 +196,81 @@ public class PrinterService : IPrinterService
                     throw new InvalidOperationException("Ghostscript not found. Please install Ghostscript (https://www.ghostscript.com/download/gsdnld.html)");
                 }
 
+                // Detectar si es una impresora PDF virtual que requiere diálogo
+                bool isPdfVirtualPrinter = printerName.Contains("Print to PDF", StringComparison.OrdinalIgnoreCase) ||
+                                          printerName.Contains("PDF", StringComparison.OrdinalIgnoreCase) &&
+                                          printerName.Contains("Microsoft", StringComparison.OrdinalIgnoreCase);
+
+                if (isPdfVirtualPrinter)
+                {
+                    _logger.LogWarning("ADVERTENCIA: La impresora '{Printer}' es una impresora PDF virtual que requiere diálogos interactivos. " +
+                        "Como el servicio se ejecuta sin interfaz de usuario, esta impresora no funcionará correctamente. " +
+                        "Recomendamos usar una impresora física o configurar la impresora PDF para modo silencioso.", printerName);
+
+                    // Intentar usar método alternativo con argumentos para evitar diálogos
+                    _logger.LogInformation("Intentando impresión con método alternativo para evitar diálogos...");
+                }
+
                 // Imprimir cada copia
                 for (int copy = 0; copy < copies; copy++)
                 {
                     _logger.LogInformation("Iniciando impresión copia {Copy} de {Total}", copy + 1, copies);
 
+                    // Para impresoras PDF virtuales, usar argumentos adicionales para evitar diálogos
+                    string gsArguments;
+                    if (isPdfVirtualPrinter)
+                    {
+                        // Intentar con argumentos que eviten diálogos (puede no funcionar para todas las impresoras PDF)
+                        gsArguments = $"-dNOPAUSE -dBATCH -dNoCancel -sDEVICE=mswinpr2 -sOutputFile=\"%printer%{printerName}\" \"{tempFilePath}\"";
+                        _logger.LogWarning("Usando argumentos especiales para impresora PDF virtual. Si falla, use una impresora física.");
+                    }
+                    else
+                    {
+                        gsArguments = $"-dNOPAUSE -dBATCH -sDEVICE=mswinpr2 -sOutputFile=\"%printer%{printerName}\" \"{tempFilePath}\"";
+                    }
+
+                    // Detectar si estamos ejecutándonos como servicio
+                    bool isRunningAsService = Environment.UserInteractive == false;
+
+                    if (isRunningAsService)
+                    {
+                        _logger.LogInformation("Ejecutándose como servicio de Windows");
+                    }
+
                     var processInfo = new System.Diagnostics.ProcessStartInfo
                     {
                         FileName = gsPath,
-                        Arguments = $"-dNOPAUSE -dBATCH -sDEVICE=mswinpr2 -sOutputFile=\"%printer%{printerName}\" \"{tempFilePath}\"",
+                        Arguments = gsArguments,
                         UseShellExecute = false,
-                        CreateNoWindow = true,
-                        WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                        CreateNoWindow = !isPdfVirtualPrinter, // Para PDF virtuales, puede necesitar ventana
+                        WindowStyle = isPdfVirtualPrinter ?
+                            System.Diagnostics.ProcessWindowStyle.Normal :
+                            System.Diagnostics.ProcessWindowStyle.Hidden,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
-                        RedirectStandardInput = false
+                        RedirectStandardInput = false,
+                        LoadUserProfile = true, // Cargar perfil de usuario
+                        WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
                     };
+
+                    // Si es impresora PDF virtual y estamos como servicio, intentar ejecutar en sesión del usuario
+                    if (isPdfVirtualPrinter && isRunningAsService)
+                    {
+                        _logger.LogWarning("ADVERTENCIA: Impresora PDF virtual ejecutándose desde servicio. " +
+                            "Esto puede requerir que el servicio esté configurado para interactuar con el escritorio " +
+                            "o ejecutarse como el usuario actual.");
+
+                        // Intentar usar UseShellExecute para que use la sesión del usuario
+                        // Solo si no redirigimos la salida
+                        if (false) // Cambiar a true solo para debug
+                        {
+                            processInfo.UseShellExecute = true;
+                            processInfo.RedirectStandardOutput = false;
+                            processInfo.RedirectStandardError = false;
+                            processInfo.CreateNoWindow = false;
+                            _logger.LogInformation("Modo alternativo: UseShellExecute activado (sin redirección de salida)");
+                        }
+                    }
 
                     using var process = System.Diagnostics.Process.Start(processInfo);
                     if (process == null)
@@ -243,8 +302,9 @@ public class PrinterService : IPrinterService
                         }
                     });
 
-                    // Esperar a que termine el proceso con un timeout de 2 minutos
-                    var timeout = TimeSpan.FromMinutes(2);
+                    // Esperar a que termine el proceso con un timeout más corto para PDF virtuales
+                    var timeout = isPdfVirtualPrinter ? TimeSpan.FromSeconds(30) : TimeSpan.FromMinutes(2);
+                    _logger.LogInformation("Timeout configurado: {Timeout} segundos", timeout.TotalSeconds);
                     var processTask = process.WaitForExitAsync();
                     var startTime = DateTime.Now;
                     var completedTask = await Task.WhenAny(processTask, Task.Delay(timeout));
@@ -260,8 +320,8 @@ public class PrinterService : IPrinterService
                     }
                     else
                     {
-                        _logger.LogError("Proceso de Ghostscript excedió el timeout de {Timeout} minutos. Elapsed: {Seconds}s",
-                            timeout.TotalMinutes, elapsed);
+                        _logger.LogError("Proceso de Ghostscript excedió el timeout de {Timeout} segundos. Elapsed: {Seconds}s",
+                            timeout.TotalSeconds, elapsed);
 
                         // Verificar estado del proceso
                         try
@@ -282,7 +342,16 @@ public class PrinterService : IPrinterService
                         {
                             _logger.LogError(killEx, "Error al terminar proceso: {Error}", killEx.Message);
                         }
-                        throw new TimeoutException($"Ghostscript process exceeded timeout of {timeout.TotalMinutes} minutes");
+
+                        string errorMsg = $"Ghostscript process exceeded timeout of {timeout.TotalSeconds} seconds";
+                        if (isPdfVirtualPrinter)
+                        {
+                            errorMsg += ". NOTA: Las impresoras PDF virtuales como 'Microsoft Print to PDF' requieren diálogos interactivos " +
+                                       "que no están disponibles cuando el servicio se ejecuta sin interfaz de usuario. " +
+                                       "Use una impresora física o configure la impresora PDF para modo automático.";
+                        }
+
+                        throw new TimeoutException(errorMsg);
                     }
 
                     string output = await outputTask;
