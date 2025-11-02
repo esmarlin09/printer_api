@@ -209,7 +209,8 @@ public class PrinterService : IPrinterService
                         CreateNoWindow = true,
                         WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
                         RedirectStandardOutput = true,
-                        RedirectStandardError = true
+                        RedirectStandardError = true,
+                        RedirectStandardInput = false
                     };
 
                     using var process = System.Diagnostics.Process.Start(processInfo);
@@ -219,20 +220,86 @@ public class PrinterService : IPrinterService
                         throw new InvalidOperationException("Failed to start Ghostscript process");
                     }
 
-                    // Capturar salida estándar y error
-                    string output = await process.StandardOutput.ReadToEndAsync();
-                    string error = await process.StandardError.ReadToEndAsync();
+                    _logger.LogInformation("Proceso Ghostscript iniciado (PID: {ProcessId}). Comando: {FileName} {Arguments}",
+                        process.Id, gsPath, processInfo.Arguments);
 
-                    await process.WaitForExitAsync();
+                    // Leer salida de forma asíncrona mientras el proceso corre
+                    var outputTask = process.StandardOutput.ReadToEndAsync();
+                    var errorTask = process.StandardError.ReadToEndAsync();
 
+                    // Monitorear el proceso con logging periódico
+                    var processStartTime = DateTime.Now;
+                    var monitoringTask = Task.Run(async () =>
+                    {
+                        while (!process.HasExited)
+                        {
+                            await Task.Delay(TimeSpan.FromSeconds(5));
+                            if (!process.HasExited)
+                            {
+                                var elapsed = (DateTime.Now - processStartTime).TotalSeconds;
+                                _logger.LogInformation("Proceso Ghostscript aún ejecutándose (PID: {ProcessId}, Tiempo transcurrido: {Seconds}s)",
+                                    process.Id, elapsed);
+                            }
+                        }
+                    });
+
+                    // Esperar a que termine el proceso con un timeout de 2 minutos
+                    var timeout = TimeSpan.FromMinutes(2);
+                    var processTask = process.WaitForExitAsync();
+                    var startTime = DateTime.Now;
+                    var completedTask = await Task.WhenAny(processTask, Task.Delay(timeout));
+
+                    var elapsed = (DateTime.Now - startTime).TotalSeconds;
+                    _logger.LogInformation("Espera completada después de {Seconds} segundos", elapsed);
+
+                    if (completedTask == processTask)
+                    {
+                        _logger.LogInformation("Proceso terminó normalmente, esperando captura de salida...");
+                        await Task.WhenAll(outputTask, errorTask);
+                        _logger.LogInformation("Salida capturada completamente");
+                    }
+                    else
+                    {
+                        _logger.LogError("Proceso de Ghostscript excedió el timeout de {Timeout} minutos. Elapsed: {Seconds}s",
+                            timeout.TotalMinutes, elapsed);
+
+                        // Verificar estado del proceso
+                        try
+                        {
+                            if (!process.HasExited)
+                            {
+                                _logger.LogWarning("Proceso aún corriendo, intentando terminar...");
+                                process.Kill(entireProcessTree: true);
+                                await Task.Delay(1000); // Esperar un segundo para que termine
+                                _logger.LogWarning("Proceso Ghostscript terminado forzadamente");
+                            }
+                            else
+                            {
+                                _logger.LogInformation("Proceso ya había terminado antes del timeout");
+                            }
+                        }
+                        catch (Exception killEx)
+                        {
+                            _logger.LogError(killEx, "Error al terminar proceso: {Error}", killEx.Message);
+                        }
+                        throw new TimeoutException($"Ghostscript process exceeded timeout of {timeout.TotalMinutes} minutes");
+                    }
+
+                    string output = await outputTask;
+                    string error = await errorTask;
                     int exitCode = process.ExitCode;
+
                     _logger.LogInformation("Ghostscript terminó con código de salida: {ExitCode}", exitCode);
 
                     if (!string.IsNullOrWhiteSpace(output))
+                    {
                         _logger.LogInformation("Salida de Ghostscript: {Output}", output);
+                    }
 
                     if (!string.IsNullOrWhiteSpace(error))
+                    {
                         _logger.LogWarning("Error de Ghostscript: {Error}", error);
+                    }
 
                     if (exitCode != 0)
                     {
@@ -246,7 +313,7 @@ public class PrinterService : IPrinterService
                         throw new InvalidOperationException(errorMessage);
                     }
 
-                    _logger.LogInformation("Copia {Copy} impresa exitosamente", copy + 1);
+                    _logger.LogInformation("✅ Copia {Copy} impresa exitosamente", copy + 1);
 
                     if (copy < copies - 1)
                         await Task.Delay(1000);
