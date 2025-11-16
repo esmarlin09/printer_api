@@ -9,6 +9,7 @@ using Serilog;
 using Serilog.Events;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Management;
 
 // ✅ Configurar Serilog para logging a archivo
 var logPath = Path.Combine(AppContext.BaseDirectory, "logs", "liteprint-{Date}.log");
@@ -31,32 +32,37 @@ builder.Host.UseContentRoot(AppContext.BaseDirectory);
 // ✅ Usar Serilog para logging
 builder.Host.UseSerilog();
 
-// ✅ Configurar Kestrel / URL antes del Build
+// ✅ Configurar Kestrel / URL antes del Build (SOLO HTTP)
 builder.WebHost.UseKestrel().UseUrls("http://0.0.0.0:9005");
 
 // ✅ Servicios básicos + Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 🔓 CORS: PERMITIR ABSOLUTAMENTE TODOS LOS ORÍGENES SIN RESTRICCIONES
+// 🔓 CORS: CONFIGURACIÓN ESPECÍFICA PARA EL DOMINIO
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("LightTechnologyPolicy", policy =>
     {
-        policy.AllowAnyOrigin()  // ✅ Cualquier origen
-              .AllowAnyMethod()  // ✅ Cualquier método (GET, POST, etc.)
-              .AllowAnyHeader()  // ✅ Cualquier header
-              .WithExposedHeaders("*"); // ✅ Exponer todos los headers
+        policy.WithOrigins(
+                "https://lm-pos.lighttechnology.online",
+                "https://www.lm-pos.lighttechnology.online"
+            )
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .WithExposedHeaders("*")
+            .SetPreflightMaxAge(TimeSpan.FromHours(24));
     });
 
-    // Política adicional por si acaso
-    options.AddPolicy("AllowAll", policy =>
+    options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.SetIsOriginAllowed(origin => true)
               .AllowAnyMethod()
               .AllowAnyHeader()
+              .AllowCredentials()
               .WithExposedHeaders("*")
-              .SetPreflightMaxAge(TimeSpan.FromHours(24)); // ✅ Cache preflight
+              .SetPreflightMaxAge(TimeSpan.FromHours(24));
     });
 });
 
@@ -72,23 +78,39 @@ builder.Services.AddHostedService(provider => provider.GetRequiredService<TraySe
 
 var app = builder.Build();
 
-// ✅ IMPORTANTE: Aplicar CORS al inicio de la pipeline
-app.UseCors(); // ✅ Usa la política por defecto
-app.UseCors("AllowAll"); // ✅ Y también la política específica
+// ✅ MIDDLEWARE CORS MEJORADO
+app.UseCors("LightTechnologyPolicy");
+app.UseCors();
 
-// Manejar preflight requests globalmente
+// Middleware personalizado para headers CORS adicionales
 app.Use(async (context, next) =>
 {
+    var origin = context.Request.Headers["Origin"].ToString();
+    
+    // Permitir el dominio específico
+    if (origin.Contains("lighttechnology.online"))
+    {
+        context.Response.Headers.Append("Access-Control-Allow-Origin", origin);
+        context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+    }
+    else
+    {
+        context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+    }
+
+    context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With, Origin");
+    context.Response.Headers.Append("Access-Control-Max-Age", "86400");
+    context.Response.Headers.Append("Access-Control-Expose-Headers", "*");
+
+    // Manejar requests OPTIONS (preflight)
     if (context.Request.Method == "OPTIONS")
     {
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "*");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
-        context.Response.Headers.Add("Access-Control-Max-Age", "86400");
         context.Response.StatusCode = 200;
         await context.Response.CompleteAsync();
         return;
     }
+
     await next();
 });
 
@@ -100,7 +122,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
-// ✅ Endpoints simples - TODOS permiten CORS automáticamente
+// ✅ Endpoints simples
 app.MapGet("/health", () => Results.Ok(new { status = "ok", time = DateTimeOffset.Now }))
    .WithTags("System");
 
@@ -171,13 +193,24 @@ app.MapGet("/logs/clear", (ILogger<Program> logger) =>
 
 app.MapGet("/printers", () =>
 {
+    // Obtener lista de impresoras
     var printers = new List<string>();
     foreach (string printer in PrinterSettings.InstalledPrinters)
         printers.Add(printer);
-    return Results.Ok(printers);
+
+    // Obtener un identificador único de la máquina (Windows)
+    string deviceId = GetDeviceId();
+
+    var result = new
+    {
+        deviceId = deviceId,
+        printers = printers
+    };
+
+    return Results.Ok(result);
 }).WithTags("Printers");
 
-// ✅ Endpoint de impresión con CORS explícito
+// ✅ Endpoint de impresión
 app.MapPost("/print", (PrintRequest request, IPrinterService printerService, ILogger<Program> logger) =>
 {
     try
@@ -215,32 +248,70 @@ app.MapPost("/print", (PrintRequest request, IPrinterService printerService, ILo
     }
 }).WithTags("Print");
 
-// ✅ Endpoint de prueba CORS
-app.MapGet("/cors-test", () => 
+static string GetDeviceId()
 {
+    try
+    {
+        using var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_ComputerSystemProduct");
+        foreach (ManagementObject obj in searcher.Get())
+        {
+            var uuid = obj["UUID"]?.ToString();
+            if (!string.IsNullOrEmpty(uuid))
+                return uuid;
+        }
+    }
+    catch
+    {
+        // Si falla, usa un fallback basado en nombre de equipo
+        return Environment.MachineName.GetHashCode().ToString();
+    }
+
+    // Fallback final
+    return Environment.MachineName.GetHashCode().ToString();
+}
+
+// ✅ Endpoint de prueba CORS mejorado
+app.MapGet("/cors-test", (HttpContext context) => 
+{
+    var origin = context.Request.Headers["Origin"].ToString();
+    var userAgent = context.Request.Headers["User-Agent"].ToString();
+    
     return Results.Ok(new { 
         message = "CORS está funcionando correctamente", 
         timestamp = DateTime.Now,
-        cors = "TODOS los orígenes permitidos",
-        methods = "TODOS los métodos permitidos",
-        headers = "TODOS los headers permitidos"
+        yourOrigin = origin,
+        allowedOrigins = new[] {
+            "https://lm-pos.lighttechnology.online",
+            "https://www.lm-pos.lighttechnology.online"
+        },
+        userAgent = userAgent,
+        corsStatus = "ACTIVE",
+        serverUrl = "http://localhost:9005",
+        note = "Para sitios HTTPS, considera usar un proxy o servicio intermedio"
     });
 }).WithTags("System");
 
-// ✅ Endpoint OPTIONS global para preflight
+// ✅ Endpoints OPTICS explícitos
 app.MapMethods("/print", new[] { "OPTIONS" }, () =>
 {
-    return Results.Ok();
+    return Results.Ok(new { message = "Preflight OK for /print" });
 }).WithTags("Print");
+
+app.MapMethods("/printers", new[] { "OPTIONS" }, () =>
+{
+    return Results.Ok(new { message = "Preflight OK for /printers" });
+}).WithTags("Printers");
 
 app.MapMethods("/{*path}", new[] { "OPTIONS" }, (string path) =>
 {
-    return Results.Ok();
+    return Results.Ok(new { message = $"Preflight OK for path: {path}" });
 }).WithTags("System");
 
 try
 {
     Log.Information("Iniciando LitePrint API Service");
+    Log.Information("Servidor escuchando en: http://localhost:9005");
+    Log.Information("CORS configurado para: https://lm-pos.lighttechnology.online");
     
     // Ocultar la ventana de consola inmediatamente
     var consoleHandle = NativeMethods.GetConsoleWindow();

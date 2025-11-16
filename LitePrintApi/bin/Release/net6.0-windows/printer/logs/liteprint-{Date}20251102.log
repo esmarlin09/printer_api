@@ -1,0 +1,91 @@
+[2025-11-02 18:36:41.972] [INF] Iniciando LitePrint API Service
+[2025-11-02 18:36:42.020] [INF] Servidor escuchando en:
+[2025-11-02 18:36:42.021] [INF]   - HTTP: http://localhost:9005
+[2025-11-02 18:36:42.021] [INF]   - HTTPS: https://localhost:9006
+[2025-11-02 18:36:42.021] [INF] CORS configurado para: https://lm-pos.lighttechnology.online
+[2025-11-02 18:36:42.037] [INF] Inicializando LitePrintService...
+[2025-11-02 18:36:42.134] [INF] Now listening on: http://[::]:9005
+[2025-11-02 18:36:42.135] [INF] Now listening on: https://[::]:9006
+[2025-11-02 18:36:42.136] [INF] Application started. Press Ctrl+C to shut down.
+[2025-11-02 18:36:42.137] [INF] Hosting environment: Production
+[2025-11-02 18:36:42.137] [INF] Content root path: C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\bin\Release\net6.0-windows\win-x64\
+[2025-11-02 18:36:42.221] [INF] Icono del system tray creado correctamente
+[2025-11-02 18:36:42.252] [INF] LitePrintService iniciado correctamente.
+[2025-11-02 18:36:54.390] [INF] Request starting HTTP/1.1 GET http://localhost:9005/swagger/index.html - -
+[2025-11-02 18:36:54.606] [INF] Request finished HTTP/1.1 GET http://localhost:9005/swagger/index.html - - - 200 - text/html;charset=utf-8 226.1683ms
+[2025-11-02 18:36:55.023] [INF] Request starting HTTP/1.1 GET http://localhost:9005/swagger/v1/swagger.json - -
+[2025-11-02 18:36:55.272] [INF] Request finished HTTP/1.1 GET http://localhost:9005/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 248.6353ms
+[2025-11-02 18:37:20.750] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/index.html - -
+[2025-11-02 18:37:20.761] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/index.html - - - 200 - text/html;charset=utf-8 11.3989ms
+[2025-11-02 18:37:20.806] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/swagger-ui.css - -
+[2025-11-02 18:37:20.812] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/swagger-ui-bundle.js - -
+[2025-11-02 18:37:20.813] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/swagger-ui-standalone-preset.js - -
+[2025-11-02 18:37:20.820] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:20.820] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:20.820] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:20.821] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:20.821] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:20.821] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:20.822] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/swagger-ui-standalone-preset.js - - - 405 0 - 8.8997ms
+[2025-11-02 18:37:20.822] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/swagger-ui-bundle.js - - - 405 0 - 9.8789ms
+[2025-11-02 18:37:20.822] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/swagger-ui.css - - - 405 0 - 15.5114ms
+[2025-11-02 18:37:20.878] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/favicon-32x32.png - -
+[2025-11-02 18:37:20.879] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:20.879] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:20.879] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/favicon-32x32.png - - - 405 0 - 0.6196ms
+[2025-11-02 18:37:20.900] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/favicon-16x16.png - -
+[2025-11-02 18:37:20.900] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:20.901] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:20.901] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/favicon-16x16.png - - - 405 0 - 0.9582ms
+[2025-11-02 18:37:27.500] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/index.html - -
+[2025-11-02 18:37:27.501] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/index.html - - - 200 - text/html;charset=utf-8 1.1975ms
+[2025-11-02 18:37:27.532] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/swagger-ui.css - -
+[2025-11-02 18:37:27.533] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:27.533] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:27.534] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/swagger-ui.css - - - 405 0 - 1.7647ms
+[2025-11-02 18:37:27.534] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/swagger-ui-standalone-preset.js - -
+[2025-11-02 18:37:27.534] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/swagger-ui-bundle.js - -
+[2025-11-02 18:37:27.535] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:27.535] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:27.535] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:27.535] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:27.535] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/swagger-ui-standalone-preset.js - - - 405 0 - 0.9530ms
+[2025-11-02 18:37:27.535] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/swagger-ui-bundle.js - - - 405 0 - 1.1888ms
+[2025-11-02 18:37:27.546] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/favicon-32x32.png - -
+[2025-11-02 18:37:27.546] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:27.546] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:27.546] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/favicon-32x32.png - - - 405 0 - 0.5780ms
+[2025-11-02 18:37:27.586] [INF] Request starting HTTP/2 GET https://localhost:9006/swagger/favicon-16x16.png - -
+[2025-11-02 18:37:27.586] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:27.586] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:27.587] [INF] Request finished HTTP/2 GET https://localhost:9006/swagger/favicon-16x16.png - - - 405 0 - 0.7178ms
+[2025-11-02 18:37:33.904] [INF] Request starting HTTP/2 GET https://localhost:9006/printers - -
+[2025-11-02 18:37:33.904] [INF] Executing endpoint 'HTTP: GET /printers'
+[2025-11-02 18:37:34.137] [INF] Writing value of type '<>f__AnonymousType1`2[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-02 18:37:34.141] [INF] Executed endpoint 'HTTP: GET /printers'
+[2025-11-02 18:37:34.141] [INF] Request finished HTTP/2 GET https://localhost:9006/printers - - - 200 - application/json;+charset=utf-8 237.8172ms
+[2025-11-02 18:37:34.186] [INF] Request starting HTTP/2 GET https://localhost:9006/favicon.ico - -
+[2025-11-02 18:37:34.188] [INF] Executing endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:34.188] [INF] Executed endpoint '405 HTTP Method Not Supported'
+[2025-11-02 18:37:34.188] [INF] Request finished HTTP/2 GET https://localhost:9006/favicon.ico - - - 405 0 - 1.6458ms
+[2025-11-02 18:38:30.627] [INF] Cerrando aplicación desde el system tray...
+[2025-11-02 18:38:30.640] [INF] Application is shutting down...
+[2025-11-02 18:38:30.661] [INF] Icono del system tray eliminado
+[2025-11-02 18:38:30.661] [INF] LitePrintService detenido.
+[2025-11-02 18:42:56.268] [INF] Iniciando LitePrint API Service
+[2025-11-02 18:42:56.309] [INF] Servidor escuchando en:
+[2025-11-02 18:42:56.309] [INF]   - HTTP: http://localhost:9005
+[2025-11-02 18:42:56.309] [INF]   - HTTPS: https://localhost:9006
+[2025-11-02 18:42:56.309] [INF] CORS configurado para: https://lm-pos.lighttechnology.online
+[2025-11-02 18:42:56.326] [INF] Inicializando LitePrintService...
+[2025-11-02 18:42:56.426] [INF] Now listening on: http://[::]:9005
+[2025-11-02 18:42:56.429] [INF] Now listening on: https://[::]:9006
+[2025-11-02 18:42:56.429] [INF] Application started. Press Ctrl+C to shut down.
+[2025-11-02 18:42:56.430] [INF] Hosting environment: Production
+[2025-11-02 18:42:56.430] [INF] Content root path: C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\bin\Release\net6.0-windows\win-x64\
+[2025-11-02 18:42:56.512] [INF] Icono del system tray creado correctamente
+[2025-11-02 18:42:56.539] [INF] LitePrintService iniciado correctamente.
+[2025-11-02 18:56:21.717] [INF] Cerrando aplicación desde el system tray...
+[2025-11-02 18:56:21.728] [INF] Application is shutting down...
+[2025-11-02 18:56:21.759] [INF] Icono del system tray eliminado
+[2025-11-02 18:56:21.764] [INF] LitePrintService detenido.

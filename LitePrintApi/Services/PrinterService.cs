@@ -1,5 +1,6 @@
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Text;
 using LitePrintApi.Models;
 using Microsoft.Extensions.Logging;
 
@@ -22,6 +23,7 @@ public class PrinterService : IPrinterService
     {
         _logger = logger;
     }
+
     public List<PrinterInfo> GetPrinters()
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -115,327 +117,347 @@ public class PrinterService : IPrinterService
 
     public async Task<bool> PrintPdfAsync(string printerName, string base64Pdf, int copies, bool removeMargins)
     {
+        string tempFilePath = "";
+        
         try
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                // Intentar método alternativo para macOS/Linux si es necesario
                 throw new PlatformNotSupportedException("Printing is only supported on Windows");
             }
 
-            // Decodificar base64 a bytes
-            _logger.LogInformation("Decodificando PDF desde base64...");
+            _logger.LogInformation("🚀 INICIANDO PROCESO DE IMPRESIÓN");
+            _logger.LogInformation("Impresora destino: {Printer}", printerName);
+            _logger.LogInformation("Copias solicitadas: {Copies}", copies);
+
+            // Paso 1: Decodificar base64 a bytes
+            _logger.LogInformation("📄 Decodificando PDF desde base64...");
             byte[] pdfBytes;
             try
             {
                 pdfBytes = Convert.FromBase64String(base64Pdf);
-                _logger.LogInformation("PDF decodificado exitosamente. Tamaño: {Size} bytes", pdfBytes.Length);
+                _logger.LogInformation("✅ PDF decodificado correctamente. Tamaño: {Size} bytes", pdfBytes.Length);
             }
             catch (FormatException ex)
             {
-                _logger.LogError(ex, "Error al decodificar base64: {Error}", ex.Message);
-                throw new ArgumentException($"Invalid base64 PDF format: {ex.Message}", ex);
+                _logger.LogError(ex, "❌ Error al decodificar base64");
+                throw new ArgumentException($"Formato base64 inválido: {ex.Message}", ex);
             }
 
-            // Guardar en archivo temporal
-            string tempFilePath = Path.Combine(Path.GetTempPath(), $"print_{Guid.NewGuid()}.pdf");
-            _logger.LogInformation("Guardando PDF temporal en: {Path}", tempFilePath);
+            // Paso 2: Guardar en archivo temporal
+            tempFilePath = Path.Combine(Path.GetTempPath(), $"print_{Guid.NewGuid()}.pdf");
+            _logger.LogInformation("💾 Guardando PDF temporal en: {Path}", tempFilePath);
             await File.WriteAllBytesAsync(tempFilePath, pdfBytes);
+            
+            if (!File.Exists(tempFilePath))
+            {
+                throw new InvalidOperationException("No se pudo crear el archivo temporal PDF");
+            }
+            _logger.LogInformation("✅ PDF temporal guardado correctamente");
 
+            // Paso 3: Verificar que la impresora existe
+            _logger.LogInformation("🔍 Verificando existencia de impresora: {Printer}", printerName);
+            bool printerFound = false;
             try
             {
-                // Usar WMI para verificar que la impresora existe
-                _logger.LogInformation("Verificando existencia de impresora: {Printer}", printerName);
                 using var searcher = new ManagementObjectSearcher(
                     $"SELECT Name FROM Win32_Printer WHERE Name = '{printerName.Replace("'", "''")}'");
 
-                var printerFound = false;
                 foreach (ManagementObject printerObj in searcher.Get())
                 {
                     printerFound = true;
                     break;
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Advertencia al verificar impresora via WMI");
+                // Continuar con método alternativo
+            }
 
-                if (!printerFound)
-                {
-                    _logger.LogError("Impresora no encontrada: {Printer}", printerName);
-                    throw new ArgumentException($"Printer '{printerName}' not found");
-                }
-                _logger.LogInformation("Impresora encontrada: {Printer}", printerName);
+            if (!printerFound)
+            {
+                // Método alternativo: verificar en lista de impresoras instaladas
+                var installedPrinters = GetPrinterNames();
+                printerFound = installedPrinters.Any(p => p.Equals(printerName, StringComparison.OrdinalIgnoreCase));
+            }
 
-                // Imprimir usando Ghostscript
-                var gsPaths = new[]
+            if (!printerFound)
+            {
+                _logger.LogError("❌ Impresora no encontrada: {Printer}", printerName);
+                _logger.LogInformation("Impresoras disponibles: {Printers}", string.Join(", ", GetPrinterNames()));
+                throw new ArgumentException($"Impresora '{printerName}' no encontrada");
+            }
+
+            _logger.LogInformation("✅ Impresora encontrada: {Printer}", printerName);
+
+            // Paso 4: Buscar Ghostscript
+            _logger.LogInformation("🔎 Buscando Ghostscript...");
+            string? gsPath = FindGhostscript();
+            
+            if (gsPath == null)
+            {
+                _logger.LogError("❌ Ghostscript no encontrado");
+                _logger.LogInformation("💡 Solución: Instalar Ghostscript desde https://www.ghostscript.com/download/gsdnld.html");
+                throw new InvalidOperationException("Ghostscript no encontrado. Por favor instale Ghostscript.");
+            }
+
+            _logger.LogInformation("✅ Ghostscript encontrado en: {Path}", gsPath);
+
+            // Paso 5: Detectar tipo de impresora y configurar argumentos
+            bool isPosPrinter = printerName.Contains("POS", StringComparison.OrdinalIgnoreCase) ||
+                               printerName.Contains("thermal", StringComparison.OrdinalIgnoreCase) ||
+                               printerName.Contains("80", StringComparison.OrdinalIgnoreCase) ||
+                               printerName.Contains("ticket", StringComparison.OrdinalIgnoreCase) ||
+                               printerName.Contains("termica", StringComparison.OrdinalIgnoreCase) ||
+                               printerName.Contains("Epson TM", StringComparison.OrdinalIgnoreCase);
+
+            _logger.LogInformation("📠 Tipo de impresora detectada - POS: {IsPosPrinter}", isPosPrinter);
+
+            string gsArguments;
+            if (isPosPrinter)
+            {
+                _logger.LogInformation("⚙️ Configurando para impresora POS de 80 columnas...");
+                // Configuración optimizada para impresoras térmicas POS
+                gsArguments = $"-dNOPAUSE -dBATCH " +
+                              $"-dPDFFitPage " +
+                              $"-dFIXEDMEDIA " +
+                              $"-dDEVICEWIDTHPOINTS=576 " +  // 80 columnas
+                              $"-dDEVICEHEIGHTPOINTS=9999 " + // Altura para rollo continuo
+                              $"-dAutoRotatePages=/None " +
+                              $"-dUseCropBox " +
+                              $"-sDEVICE=mswinpr2 " +
+                              $"-sOutputFile=\"%printer%{printerName}\" " +
+                              $"\"{tempFilePath}\"";
+            }
+            else
+            {
+                _logger.LogInformation("⚙️ Configurando para impresora estándar...");
+                // Configuración estándar
+                gsArguments = $"-dNOPAUSE -dBATCH " +
+                              $"-sDEVICE=mswinpr2 " +
+                              $"-sOutputFile=\"%printer%{printerName}\" " +
+                              $"\"{tempFilePath}\"";
+            }
+
+            _logger.LogInformation("🔧 Argumentos de Ghostscript: {Arguments}", gsArguments);
+
+            // Paso 6: Ejecutar Ghostscript para cada copia
+            _logger.LogInformation("🖨️ Iniciando proceso de impresión...");
+
+            for (int copy = 0; copy < copies; copy++)
+            {
+                _logger.LogInformation("📋 Imprimiendo copia {Copy} de {Total}", copy + 1, copies);
+
+                using var process = new System.Diagnostics.Process();
+                process.StartInfo.FileName = gsPath;
+                process.StartInfo.Arguments = gsArguments;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.WorkingDirectory = Path.GetTempPath();
+
+                // Configurar manejadores de eventos para salida en tiempo real
+                var outputBuilder = new StringBuilder();
+                var errorBuilder = new StringBuilder();
+
+                process.OutputDataReceived += (sender, e) =>
                 {
-                    @"C:\Program Files\gs\gs10.05.0\bin\gswin64c.exe",
-                    @"C:\Program Files\gs\gs10.04.0\bin\gswin64c.exe",
-                    @"C:\Program Files\gs\gs10.03.0\bin\gswin64c.exe",
-                    @"C:\Program Files\gs\gs10.02.1\bin\gswin64c.exe",
-                    @"C:\Program Files\gs\gs10.01.2\bin\gswin64c.exe",
-                    @"C:\Program Files (x86)\gs\gs10.05.0\bin\gswin32c.exe",
-                    @"C:\Program Files (x86)\gs\gs10.04.0\bin\gswin32c.exe",
-                    @"C:\Program Files (x86)\gs\gs10.03.0\bin\gswin32c.exe",
-                    @"C:\Program Files (x86)\gs\gs10.02.1\bin\gswin32c.exe",
-                    @"C:\Program Files (x86)\gs\gs10.01.2\bin\gswin32c.exe"
+                    if (!string.IsNullOrEmpty(e.Data))
+                    {
+                        outputBuilder.AppendLine(e.Data);
+                        _logger.LogInformation("Ghostscript Output: {Data}", e.Data);
+                    }
                 };
 
-                string? gsPath = null;
-                _logger.LogInformation("Buscando instalación de Ghostscript...");
-                foreach (var path in gsPaths)
+                process.ErrorDataReceived += (sender, e) =>
                 {
-                    if (File.Exists(path))
+                    if (!string.IsNullOrEmpty(e.Data))
                     {
-                        gsPath = path;
-                        _logger.LogInformation("Ghostscript encontrado en: {Path}", gsPath);
-                        break;
+                        errorBuilder.AppendLine(e.Data);
+                        _logger.LogWarning("Ghostscript Error: {Data}", e.Data);
                     }
+                };
+
+                _logger.LogInformation("▶️ Iniciando proceso Ghostscript...");
+                bool started = process.Start();
+                
+                if (!started)
+                {
+                    throw new InvalidOperationException("No se pudo iniciar el proceso Ghostscript");
                 }
 
-                if (gsPath == null)
+                _logger.LogInformation("✅ Proceso Ghostscript iniciado (PID: {ProcessId})", process.Id);
+
+                // Comenzar a leer salidas asincrónicamente
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
+                // Esperar a que termine el proceso con timeout
+                var timeout = TimeSpan.FromMinutes(3);
+                var processTask = process.WaitForExitAsync();
+                var completedTask = await Task.WhenAny(processTask, Task.Delay(timeout));
+
+                if (completedTask != processTask)
                 {
-                    _logger.LogError("Ghostscript no encontrado en ninguna de las rutas conocidas");
-                    throw new InvalidOperationException("Ghostscript not found. Please install Ghostscript (https://www.ghostscript.com/download/gsdnld.html)");
-                }
-
-                // Detectar si es una impresora PDF virtual que requiere diálogo
-                bool isPdfVirtualPrinter = printerName.Contains("Print to PDF", StringComparison.OrdinalIgnoreCase) ||
-                                          printerName.Contains("PDF", StringComparison.OrdinalIgnoreCase) &&
-                                          printerName.Contains("Microsoft", StringComparison.OrdinalIgnoreCase);
-
-                if (isPdfVirtualPrinter)
-                {
-                    _logger.LogWarning("ADVERTENCIA: La impresora '{Printer}' es una impresora PDF virtual que requiere diálogos interactivos. " +
-                        "Como el servicio se ejecuta sin interfaz de usuario, esta impresora no funcionará correctamente. " +
-                        "Recomendamos usar una impresora física o configurar la impresora PDF para modo silencioso.", printerName);
-
-                    // Intentar usar método alternativo con argumentos para evitar diálogos
-                    _logger.LogInformation("Intentando impresión con método alternativo para evitar diálogos...");
-                }
-
-                // Imprimir cada copia
-                for (int copy = 0; copy < copies; copy++)
-                {
-                    _logger.LogInformation("Iniciando impresión copia {Copy} de {Total}", copy + 1, copies);
-
-                    // Para impresoras PDF virtuales, usar argumentos adicionales para evitar diálogos
-                    string gsArguments;
-                    if (isPdfVirtualPrinter)
-                    {
-                        // Intentar con argumentos que eviten diálogos (puede no funcionar para todas las impresoras PDF)
-                        gsArguments = $"-dNOPAUSE -dBATCH -dNoCancel -sDEVICE=mswinpr2 -sOutputFile=\"%printer%{printerName}\" \"{tempFilePath}\"";
-                        _logger.LogWarning("Usando argumentos especiales para impresora PDF virtual. Si falla, use una impresora física.");
-                    }
-                    else
-                    {
-                        gsArguments = $"-dNOPAUSE -dBATCH -sDEVICE=mswinpr2 -sOutputFile=\"%printer%{printerName}\" \"{tempFilePath}\"";
-                    }
-
-                    // Detectar si estamos ejecutándonos como servicio
-                    bool isRunningAsService = Environment.UserInteractive == false;
-
-                    System.Diagnostics.Process? process;
-
-                    if (isRunningAsService)
-                    {
-                        _logger.LogInformation("Ejecutándose como servicio de Windows. Intentando ejecutar en sesión del usuario interactivo...");
-
-                        // Para servicios, intentar ejecutar en la sesión del usuario interactivo
-                        // Esto es especialmente importante para impresoras PDF virtuales
-                        bool showWindow = isPdfVirtualPrinter; // Mostrar ventana solo para PDF virtuales
-                        process = InteractiveProcessHelper.StartProcessInInteractiveSession(
-                            gsPath,
-                            gsArguments,
-                            _logger,
-                            showWindow);
-
-                        if (process == null)
-                        {
-                            _logger.LogWarning("No se pudo ejecutar en sesión interactiva, intentando método normal...");
-                            // Fallback a método normal
-                            var processInfo = new System.Diagnostics.ProcessStartInfo
-                            {
-                                FileName = gsPath,
-                                Arguments = gsArguments,
-                                UseShellExecute = true,
-                                CreateNoWindow = !isPdfVirtualPrinter,
-                                WindowStyle = isPdfVirtualPrinter ?
-                                    System.Diagnostics.ProcessWindowStyle.Normal :
-                                    System.Diagnostics.ProcessWindowStyle.Hidden
-                            };
-                            process = System.Diagnostics.Process.Start(processInfo);
-                        }
-                    }
-                    else
-                    {
-                        // Ejecución normal (no servicio)
-                        var processInfo = new System.Diagnostics.ProcessStartInfo
-                        {
-                            FileName = gsPath,
-                            Arguments = gsArguments,
-                            UseShellExecute = false,
-                            CreateNoWindow = !isPdfVirtualPrinter,
-                            WindowStyle = isPdfVirtualPrinter ?
-                                System.Diagnostics.ProcessWindowStyle.Normal :
-                                System.Diagnostics.ProcessWindowStyle.Hidden,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            RedirectStandardInput = false
-                        };
-                        process = System.Diagnostics.Process.Start(processInfo);
-                    }
-
-                    if (process == null)
-                    {
-                        _logger.LogError("No se pudo iniciar el proceso de Ghostscript");
-                        throw new InvalidOperationException("Failed to start Ghostscript process");
-                    }
-
-                    _logger.LogInformation("Proceso Ghostscript iniciado (PID: {ProcessId}). Comando: {FileName} {Arguments}",
-                        process.Id, gsPath, gsArguments);
-
-                    // Usar variable para evitar error en caso de que processInfo no exista
-                    using var processDisposable = process;
-
-                    // Leer salida solo si no es UseShellExecute
-                    Task<string>? outputTask = null;
-                    Task<string>? errorTask = null;
-
+                    _logger.LogError("⏰ Timeout: Proceso Ghostscript excedió el tiempo límite de {Timeout} minutos", timeout.TotalMinutes);
+                    
                     try
                     {
-                        if (process.StartInfo.RedirectStandardOutput)
+                        if (!process.HasExited)
                         {
-                            outputTask = process.StandardOutput.ReadToEndAsync();
-                            errorTask = process.StandardError.ReadToEndAsync();
+                            process.Kill(entireProcessTree: true);
+                            _logger.LogWarning("Proceso Ghostscript terminado forzadamente");
                         }
                     }
-                    catch (InvalidOperationException)
+                    catch (Exception killEx)
                     {
-                        // Si no se puede redirigir (UseShellExecute = true), continuar sin capturar salida
-                        _logger.LogInformation("No se puede capturar salida del proceso (UseShellExecute activado)");
+                        _logger.LogError(killEx, "Error al terminar proceso");
                     }
 
-                    // Monitorear el proceso con logging periódico
-                    var processStartTime = DateTime.Now;
-                    var monitoringTask = Task.Run(async () =>
-                    {
-                        while (!process.HasExited)
-                        {
-                            await Task.Delay(TimeSpan.FromSeconds(5));
-                            if (!process.HasExited)
-                            {
-                                var elapsed = (DateTime.Now - processStartTime).TotalSeconds;
-                                _logger.LogInformation("Proceso Ghostscript aún ejecutándose (PID: {ProcessId}, Tiempo transcurrido: {Seconds}s)",
-                                    process.Id, elapsed);
-                            }
-                        }
-                    });
-
-                    // Esperar a que termine el proceso con un timeout más corto para PDF virtuales
-                    var timeout = isPdfVirtualPrinter ? TimeSpan.FromSeconds(30) : TimeSpan.FromMinutes(2);
-                    _logger.LogInformation("Timeout configurado: {Timeout} segundos", timeout.TotalSeconds);
-                    var processTask = process.WaitForExitAsync();
-                    var startTime = DateTime.Now;
-                    var completedTask = await Task.WhenAny(processTask, Task.Delay(timeout));
-
-                    var elapsed = (DateTime.Now - startTime).TotalSeconds;
-                    _logger.LogInformation("Espera completada después de {Seconds} segundos", elapsed);
-
-                    if (completedTask == processTask)
-                    {
-                        _logger.LogInformation("Proceso terminó normalmente");
-                        if (outputTask != null && errorTask != null)
-                        {
-                            _logger.LogInformation("Esperando captura de salida...");
-                            await Task.WhenAll(outputTask, errorTask);
-                            _logger.LogInformation("Salida capturada completamente");
-                        }
-                    }
-                    else
-                    {
-                        _logger.LogError("Proceso de Ghostscript excedió el timeout de {Timeout} segundos. Elapsed: {Seconds}s",
-                            timeout.TotalSeconds, elapsed);
-
-                        // Verificar estado del proceso
-                        try
-                        {
-                            if (!process.HasExited)
-                            {
-                                _logger.LogWarning("Proceso aún corriendo, intentando terminar...");
-                                process.Kill(entireProcessTree: true);
-                                await Task.Delay(1000); // Esperar un segundo para que termine
-                                _logger.LogWarning("Proceso Ghostscript terminado forzadamente");
-                            }
-                            else
-                            {
-                                _logger.LogInformation("Proceso ya había terminado antes del timeout");
-                            }
-                        }
-                        catch (Exception killEx)
-                        {
-                            _logger.LogError(killEx, "Error al terminar proceso: {Error}", killEx.Message);
-                        }
-
-                        string errorMsg = $"Ghostscript process exceeded timeout of {timeout.TotalSeconds} seconds";
-                        if (isPdfVirtualPrinter)
-                        {
-                            errorMsg += ". NOTA: Las impresoras PDF virtuales como 'Microsoft Print to PDF' requieren diálogos interactivos " +
-                                       "que no están disponibles cuando el servicio se ejecuta sin interfaz de usuario. " +
-                                       "Use una impresora física o configure la impresora PDF para modo automático.";
-                        }
-
-                        throw new TimeoutException(errorMsg);
-                    }
-
-                    string output = outputTask != null ? await outputTask : string.Empty;
-                    string error = errorTask != null ? await errorTask : string.Empty;
-                    int exitCode = process.ExitCode;
-
-                    _logger.LogInformation("Ghostscript terminó con código de salida: {ExitCode}", exitCode);
-
-                    if (!string.IsNullOrWhiteSpace(output))
-                    {
-                        _logger.LogInformation("Salida de Ghostscript: {Output}", output);
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(error))
-                    {
-                        _logger.LogWarning("Error de Ghostscript: {Error}", error);
-                    }
-
-                    if (exitCode != 0)
-                    {
-                        string errorMessage = $"Ghostscript failed with exit code {exitCode}";
-                        if (!string.IsNullOrWhiteSpace(error))
-                            errorMessage += $". Error: {error}";
-                        if (!string.IsNullOrWhiteSpace(output))
-                            errorMessage += $". Output: {output}";
-
-                        _logger.LogError("Error en impresión: {Error}", errorMessage);
-                        throw new InvalidOperationException(errorMessage);
-                    }
-
-                    _logger.LogInformation("✅ Copia {Copy} impresa exitosamente", copy + 1);
-
-                    if (copy < copies - 1)
-                        await Task.Delay(1000);
+                    throw new TimeoutException($"El proceso de impresión excedió el tiempo límite de {timeout.TotalMinutes} minutos");
                 }
 
-                return true;
-            }
-            finally
-            {
-                // Intentar eliminar el archivo temporal después de un pequeño retraso
-                _ = Task.Run(async () =>
+                // Esperar un poco más para asegurar que toda la salida se capture
+                await Task.Delay(1000);
+
+                int exitCode = process.ExitCode;
+                _logger.LogInformation("📝 Ghostscript finalizó con código: {ExitCode}", exitCode);
+
+                if (exitCode != 0)
                 {
-                    await Task.Delay(5000);
-                    try { File.Delete(tempFilePath); } catch { }
-                });
+                    string errorOutput = errorBuilder.ToString();
+                    string standardOutput = outputBuilder.ToString();
+                    
+                    _logger.LogError("❌ Error en Ghostscript. Código: {ExitCode}", exitCode);
+                    if (!string.IsNullOrEmpty(errorOutput))
+                        _logger.LogError("Detalles del error: {Error}", errorOutput);
+                    if (!string.IsNullOrEmpty(standardOutput))
+                        _logger.LogError("Salida estándar: {Output}", standardOutput);
+
+                    throw new InvalidOperationException($"Ghostscript falló con código {exitCode}. Error: {errorOutput}");
+                }
+
+                _logger.LogInformation("✅ Copia {Copy} impresa exitosamente", copy + 1);
+
+                // Pequeña pausa entre copias
+                if (copy < copies - 1)
+                {
+                    _logger.LogInformation("⏳ Esperando entre copias...");
+                    await Task.Delay(1000);
+                }
             }
+
+            _logger.LogInformation("🎉 ¡IMPRESIÓN COMPLETADA EXITOSAMENTE!");
+            return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Propagar la excepción para que el endpoint pueda capturarla y devolver el mensaje
+            _logger.LogError(ex, "❌ ERROR CRÍTICO en el proceso de impresión");
             throw;
         }
+        finally
+        {
+            // Limpiar archivo temporal
+            if (!string.IsNullOrEmpty(tempFilePath) && File.Exists(tempFilePath))
+            {
+                try
+                {
+                    File.Delete(tempFilePath);
+                    _logger.LogInformation("🧹 Archivo temporal eliminado: {Path}", tempFilePath);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "No se pudo eliminar archivo temporal: {Path}", tempFilePath);
+                }
+            }
+        }
+    }
+
+    private string? FindGhostscript()
+    {
+        _logger.LogInformation("Buscando Ghostscript en ubicaciones comunes...");
+
+        var possiblePaths = new[]
+        {
+            // Versiones recientes 64-bit
+            @"C:\Program Files\gs\gs10.03.0\bin\gswin64c.exe",
+            @"C:\Program Files\gs\gs10.02.1\bin\gswin64c.exe",
+            @"C:\Program Files\gs\gs10.01.2\bin\gswin64c.exe",
+            @"C:\Program Files\gs\gs10.00.0\bin\gswin64c.exe",
+            @"C:\Program Files\gs\gs9.56.1\bin\gswin64c.exe",
+            @"C:\Program Files\gs\gs9.55.0\bin\gswin64c.exe",
+            @"C:\Program Files\gs\gs9.54.0\bin\gswin64c.exe",
+            @"C:\Program Files\gs\gs9.53.3\bin\gswin64c.exe",
+            @"C:\Program Files\gs\gs9.52.0\bin\gswin64c.exe",
+            @"C:\Program Files\gs\gs9.51.0\bin\gswin64c.exe",
+            @"C:\Program Files\gs\gs9.50.0\bin\gswin64c.exe",
+            
+            // Versiones recientes 32-bit
+            @"C:\Program Files (x86)\gs\gs10.03.0\bin\gswin32c.exe",
+            @"C:\Program Files (x86)\gs\gs10.02.1\bin\gswin32c.exe",
+            @"C:\Program Files (x86)\gs\gs10.01.2\bin\gswin32c.exe",
+            @"C:\Program Files (x86)\gs\gs10.00.0\bin\gswin32c.exe",
+            @"C:\Program Files (x86)\gs\gs9.56.1\bin\gswin32c.exe",
+            @"C:\Program Files (x86)\gs\gs9.55.0\bin\gswin32c.exe",
+            @"C:\Program Files (x86)\gs\gs9.54.0\bin\gswin32c.exe",
+            @"C:\Program Files (x86)\gs\gs9.53.3\bin\gswin32c.exe",
+            @"C:\Program Files (x86)\gs\gs9.52.0\bin\gswin32c.exe",
+            @"C:\Program Files (x86)\gs\gs9.51.0\bin\gswin32c.exe",
+            @"C:\Program Files (x86)\gs\gs9.50.0\bin\gswin32c.exe",
+            
+            // Nombres genéricos (PATH)
+            "gswin64c.exe",
+            "gswin32c.exe",
+            "gs.exe"
+        };
+
+        foreach (var path in possiblePaths)
+        {
+            if (File.Exists(path))
+            {
+                _logger.LogInformation("✅ Ghostscript encontrado en: {Path}", path);
+                return path;
+            }
+        }
+
+        // Buscar usando el comando WHERE de Windows
+        _logger.LogInformation("Buscando Ghostscript en PATH...");
+        try
+        {
+            var process = new System.Diagnostics.Process();
+            process.StartInfo.FileName = "where";
+            process.StartInfo.Arguments = "gswin64c";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.CreateNoWindow = true;
+
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            if (!string.IsNullOrWhiteSpace(output))
+            {
+                var lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var line in lines)
+                {
+                    var cleanPath = line.Trim();
+                    if (File.Exists(cleanPath))
+                    {
+                        _logger.LogInformation("✅ Ghostscript encontrado via WHERE: {Path}", cleanPath);
+                        return cleanPath;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "No se pudo buscar Ghostscript en PATH");
+        }
+
+        _logger.LogWarning("❌ Ghostscript no encontrado en ninguna ubicación conocida");
+        return null;
     }
 }
-

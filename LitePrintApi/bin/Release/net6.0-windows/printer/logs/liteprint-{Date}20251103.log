@@ -1,0 +1,23 @@
+[2025-11-03 20:24:49.263] [INF] Iniciando LitePrint API Service
+[2025-11-03 20:24:49.329] [INF] Servidor escuchando en: http://localhost:9005
+[2025-11-03 20:24:49.329] [INF] CORS configurado para: https://lm-pos.lighttechnology.online
+[2025-11-03 20:24:49.353] [INF] Inicializando LitePrintService...
+[2025-11-03 20:24:49.418] [INF] Now listening on: http://0.0.0.0:9005
+[2025-11-03 20:24:49.419] [INF] Application started. Press Ctrl+C to shut down.
+[2025-11-03 20:24:49.420] [INF] Hosting environment: Production
+[2025-11-03 20:24:49.420] [INF] Content root path: C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\bin\Release\net6.0-windows\win-x64\
+[2025-11-03 20:24:49.525] [INF] Icono del system tray creado correctamente
+[2025-11-03 20:24:49.564] [INF] LitePrintService iniciado correctamente.
+[2025-11-03 20:27:35.207] [INF] Request starting HTTP/1.1 GET http://localhost:9005/swagger/index.html - -
+[2025-11-03 20:27:35.505] [INF] Request finished HTTP/1.1 GET http://localhost:9005/swagger/index.html - - - 200 - text/html;charset=utf-8 306.3843ms
+[2025-11-03 20:27:35.753] [INF] Request starting HTTP/1.1 GET http://localhost:9005/swagger/v1/swagger.json - -
+[2025-11-03 20:27:36.027] [INF] Request finished HTTP/1.1 GET http://localhost:9005/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 273.4798ms
+[2025-11-03 20:27:42.558] [INF] Request starting HTTP/1.1 GET http://localhost:9005/printers - -
+[2025-11-03 20:27:42.577] [INF] Executing endpoint 'HTTP: GET /printers'
+[2025-11-03 20:27:42.837] [INF] Writing value of type '<>f__AnonymousType1`2[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 20:27:42.844] [INF] Executed endpoint 'HTTP: GET /printers'
+[2025-11-03 20:27:42.845] [INF] Request finished HTTP/1.1 GET http://localhost:9005/printers - - - 200 - application/json;+charset=utf-8 286.3037ms
+[2025-11-03 20:31:20.819] [INF] Cerrando aplicación desde el system tray...
+[2025-11-03 20:31:20.886] [INF] Application is shutting down...
+[2025-11-03 20:31:20.910] [INF] Icono del system tray eliminado
+[2025-11-03 20:31:20.910] [INF] LitePrintService detenido.

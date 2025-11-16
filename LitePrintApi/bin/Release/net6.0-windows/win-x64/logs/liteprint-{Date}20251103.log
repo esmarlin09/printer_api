@@ -1,0 +1,591 @@
+[2025-11-03 21:02:59.012] [INF] Iniciando LitePrint API Service
+[2025-11-03 21:02:59.107] [INF] Servidor escuchando en: http://localhost:9005
+[2025-11-03 21:02:59.107] [INF] CORS configurado para: https://lm-pos.lighttechnology.online
+[2025-11-03 21:02:59.132] [INF] Inicializando LitePrintService...
+[2025-11-03 21:02:59.238] [INF] Now listening on: http://0.0.0.0:9005
+[2025-11-03 21:02:59.240] [INF] Application started. Press Ctrl+C to shut down.
+[2025-11-03 21:02:59.240] [INF] Hosting environment: Production
+[2025-11-03 21:02:59.240] [INF] Content root path: C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\bin\Release\net6.0-windows\win-x64\
+[2025-11-03 21:02:59.344] [INF] LitePrintService iniciado correctamente.
+[2025-11-03 21:02:59.358] [INF] Icono del system tray creado correctamente
+[2025-11-03 21:03:02.817] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:03:02.917] [INF] CORS policy execution failed.
+[2025-11-03 21:03:02.917] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:03:02.919] [INF] CORS policy execution successful.
+[2025-11-03 21:03:02.964] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:03:03.030] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:03:03.033] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:03:03.046] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:03:03.062] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:03:03.063] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 251.4053ms
+[2025-11-03 21:03:05.886] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 264
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 165
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:03:14.500] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:03:14.507] [INF] CORS policy execution failed.
+[2025-11-03 21:03:14.507] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:03:14.508] [INF] CORS policy execution successful.
+[2025-11-03 21:03:14.508] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:03:14.511] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:03:14.512] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:03:14.513] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:03:14.514] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 13.7856ms
+[2025-11-03 21:03:14.515] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:03:17.333] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 264
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 165
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:03:20.614] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:03:20.614] [INF] CORS policy execution failed.
+[2025-11-03 21:03:20.614] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:03:20.615] [INF] CORS policy execution successful.
+[2025-11-03 21:03:20.616] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:03:20.620] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:03:20.620] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:03:20.621] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:03:20.621] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 6.9191ms
+[2025-11-03 21:03:20.621] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:03:23.319] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 264
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 165
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:03:32.225] [INF] Request starting HTTP/1.1 GET http://localhost:9005/printers - -
+[2025-11-03 21:03:32.280] [INF] Executing endpoint 'HTTP: GET /printers'
+[2025-11-03 21:03:32.310] [INF] Writing value of type '<>f__AnonymousType1`2[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:03:32.322] [INF] Executed endpoint 'HTTP: GET /printers'
+[2025-11-03 21:03:32.322] [INF] Request finished HTTP/1.1 GET http://localhost:9005/printers - - - 200 - application/json;+charset=utf-8 97.2763ms
+[2025-11-03 21:04:30.342] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:04:30.342] [INF] CORS policy execution failed.
+[2025-11-03 21:04:30.342] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:04:30.342] [INF] CORS policy execution successful.
+[2025-11-03 21:04:30.342] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:04:30.345] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:04:30.345] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:04:30.345] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:04:30.345] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 3.5640ms
+[2025-11-03 21:04:30.346] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:04:32.995] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 264
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 165
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:06:11.806] [INF] Cerrando aplicación desde el system tray...
+[2025-11-03 21:06:11.820] [INF] Application is shutting down...
+[2025-11-03 21:06:11.854] [INF] Icono del system tray eliminado
+[2025-11-03 21:06:11.854] [INF] LitePrintService detenido.
+[2025-11-03 21:09:36.744] [INF] Iniciando LitePrint API Service
+[2025-11-03 21:09:36.794] [INF] Servidor escuchando en: http://localhost:9005
+[2025-11-03 21:09:36.794] [INF] CORS configurado para: https://lm-pos.lighttechnology.online
+[2025-11-03 21:09:36.809] [INF] Inicializando LitePrintService...
+[2025-11-03 21:09:36.874] [INF] Now listening on: http://0.0.0.0:9005
+[2025-11-03 21:09:36.876] [INF] Application started. Press Ctrl+C to shut down.
+[2025-11-03 21:09:36.876] [INF] Hosting environment: Production
+[2025-11-03 21:09:36.877] [INF] Content root path: C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\bin\Release\net6.0-windows\win-x64\
+[2025-11-03 21:09:37.006] [INF] Icono del system tray creado correctamente
+[2025-11-03 21:09:37.023] [INF] LitePrintService iniciado correctamente.
+[2025-11-03 21:09:42.081] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:09:42.155] [INF] CORS policy execution failed.
+[2025-11-03 21:09:42.156] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:09:42.157] [INF] CORS policy execution successful.
+[2025-11-03 21:09:42.191] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:09:42.244] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:09:42.247] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:09:42.258] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:09:42.279] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:09:42.280] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 204.5328ms
+[2025-11-03 21:09:45.151] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 279
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 168
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:09:49.132] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:09:49.138] [INF] CORS policy execution failed.
+[2025-11-03 21:09:49.138] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:09:49.138] [INF] CORS policy execution successful.
+[2025-11-03 21:09:49.138] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:09:49.142] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:09:49.142] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:09:49.144] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:09:49.144] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 11.9762ms
+[2025-11-03 21:09:49.144] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:09:50.332] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:09:50.333] [INF] CORS policy execution failed.
+[2025-11-03 21:09:50.333] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:09:50.333] [INF] CORS policy execution successful.
+[2025-11-03 21:09:50.335] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:09:50.339] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:09:50.339] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:09:50.339] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:09:50.339] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 7.0239ms
+[2025-11-03 21:09:50.340] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:09:52.108] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 279
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 168
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:09:53.104] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 279
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 168
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:10:18.694] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:10:18.694] [INF] CORS policy execution failed.
+[2025-11-03 21:10:18.694] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:10:18.694] [INF] CORS policy execution successful.
+[2025-11-03 21:10:18.694] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:10:18.697] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:10:18.697] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:10:18.698] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:10:18.698] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 3.6563ms
+[2025-11-03 21:10:18.708] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:10:19.713] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:10:19.713] [INF] CORS policy execution failed.
+[2025-11-03 21:10:19.714] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:10:19.714] [INF] CORS policy execution successful.
+[2025-11-03 21:10:19.714] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:10:19.715] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:10:19.716] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:10:19.716] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:10:19.716] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 2.8008ms
+[2025-11-03 21:10:19.716] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:10:22.027] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 279
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 168
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:10:23.050] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 279
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 168
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:11:08.355] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:11:08.356] [INF] CORS policy execution failed.
+[2025-11-03 21:11:08.356] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:11:08.356] [INF] CORS policy execution successful.
+[2025-11-03 21:11:08.356] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:11:08.358] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:11:08.358] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:11:08.359] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:11:08.359] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 3.2585ms
+[2025-11-03 21:11:08.359] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:11:11.028] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 279
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 168
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:11:43.555] [INF] Cerrando aplicación desde el system tray...
+[2025-11-03 21:11:43.586] [INF] Application is shutting down...
+[2025-11-03 21:11:43.632] [INF] Icono del system tray eliminado
+[2025-11-03 21:11:43.633] [INF] LitePrintService detenido.
+[2025-11-03 21:11:56.501] [INF] Iniciando LitePrint API Service
+[2025-11-03 21:11:56.566] [INF] Servidor escuchando en: http://localhost:9005
+[2025-11-03 21:11:56.566] [INF] CORS configurado para: https://lm-pos.lighttechnology.online
+[2025-11-03 21:11:56.583] [INF] Inicializando LitePrintService...
+[2025-11-03 21:11:56.651] [INF] Now listening on: http://0.0.0.0:9005
+[2025-11-03 21:11:56.653] [INF] Application started. Press Ctrl+C to shut down.
+[2025-11-03 21:11:56.653] [INF] Hosting environment: Production
+[2025-11-03 21:11:56.653] [INF] Content root path: C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\bin\Release\net6.0-windows\win-x64\
+[2025-11-03 21:11:56.762] [INF] Icono del system tray creado correctamente
+[2025-11-03 21:11:56.802] [INF] LitePrintService iniciado correctamente.
+[2025-11-03 21:12:01.670] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:12:01.752] [INF] CORS policy execution failed.
+[2025-11-03 21:12:01.753] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:12:01.755] [INF] CORS policy execution successful.
+[2025-11-03 21:12:01.798] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:12:01.868] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:12:01.871] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:12:01.886] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:12:01.903] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:12:01.905] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 242.3958ms
+[2025-11-03 21:12:01.933] [INF] Decodificando PDF desde base64...
+[2025-11-03 21:12:01.935] [INF] PDF decodificado exitosamente. Tamaño: 259884 bytes
+[2025-11-03 21:12:01.936] [INF] Guardando PDF temporal en: C:\Users\User\AppData\Local\Temp\print_a6ad733a-59a5-4723-a188-a10ed43ed146.pdf
+[2025-11-03 21:12:01.938] [INF] Verificando existencia de impresora: POS80 Printer
+[2025-11-03 21:12:02.223] [INF] Impresora encontrada: POS80 Printer
+[2025-11-03 21:12:02.223] [INF] Buscando instalación de Ghostscript...
+[2025-11-03 21:12:02.223] [INF] Ghostscript encontrado en: C:\Program Files\gs\gs10.05.0\bin\gswin64c.exe
+[2025-11-03 21:12:02.224] [INF] Iniciando impresión copia 1 de 1
+[2025-11-03 21:12:02.238] [INF] Proceso Ghostscript iniciado (PID: 9168). Comando: C:\Program Files\gs\gs10.05.0\bin\gswin64c.exe -dNOPAUSE -dBATCH -sDEVICE=mswinpr2 -sOutputFile="%printer%POS80 Printer" "C:\Users\User\AppData\Local\Temp\print_a6ad733a-59a5-4723-a188-a10ed43ed146.pdf"
+[2025-11-03 21:12:02.246] [INF] Timeout configurado: 120 segundos
+[2025-11-03 21:12:03.163] [INF] Espera completada después de 0.9074491 segundos
+[2025-11-03 21:12:03.164] [INF] Proceso terminó normalmente
+[2025-11-03 21:12:03.165] [INF] Esperando captura de salida...
+[2025-11-03 21:12:03.166] [INF] Salida capturada completamente
+[2025-11-03 21:12:03.167] [INF] Ghostscript terminó con código de salida: 0
+[2025-11-03 21:12:03.167] [INF] Salida de Ghostscript: GPL Ghostscript RELEASE CANDIDATE 1 10.05.0 (2025-03-17)
+Copyright (C) 2025 Artifex Software, Inc.  All rights reserved.
+This software is supplied under the GNU AGPLv3 and comes with NO WARRANTY:
+see the file COPYING for details.
+Processing pages 1 through 1.
+Page 1
+Loading font Helvetica (or substitute) from %rom%Resource/Font/NimbusSans-Regular
+Loading font Helvetica-Bold (or substitute) from %rom%Resource/Font/NimbusSans-Bold
+
+[2025-11-03 21:12:03.167] [INF] ✅ Copia 1 impresa exitosamente
+[2025-11-03 21:12:03.169] [INF] ✅ Impresión completada exitosamente en segundo plano
+[2025-11-03 21:15:52.211] [INF] Cerrando aplicación desde el system tray...
+[2025-11-03 21:15:52.232] [INF] Application is shutting down...
+[2025-11-03 21:15:52.263] [INF] Icono del system tray eliminado
+[2025-11-03 21:15:52.264] [INF] LitePrintService detenido.
+[2025-11-03 21:16:11.435] [INF] Iniciando LitePrint API Service
+[2025-11-03 21:16:11.490] [INF] Servidor escuchando en: http://localhost:9005
+[2025-11-03 21:16:11.490] [INF] CORS configurado para: https://lm-pos.lighttechnology.online
+[2025-11-03 21:16:11.506] [INF] Inicializando LitePrintService...
+[2025-11-03 21:16:11.566] [INF] Now listening on: http://0.0.0.0:9005
+[2025-11-03 21:16:11.568] [INF] Application started. Press Ctrl+C to shut down.
+[2025-11-03 21:16:11.568] [INF] Hosting environment: Production
+[2025-11-03 21:16:11.568] [INF] Content root path: C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\bin\Release\net6.0-windows\win-x64\
+[2025-11-03 21:16:11.663] [INF] Icono del system tray creado correctamente
+[2025-11-03 21:16:11.713] [INF] LitePrintService iniciado correctamente.
+[2025-11-03 21:16:30.794] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:16:30.851] [INF] CORS policy execution failed.
+[2025-11-03 21:16:30.852] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:16:30.854] [INF] CORS policy execution successful.
+[2025-11-03 21:16:30.885] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:16:30.940] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:16:30.943] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:16:30.955] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:16:30.967] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:16:30.969] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 180.5708ms
+[2025-11-03 21:16:31.323] [INF] Rasterizando PDF con Ghostscript → PNG(s) 72mm @ 203dpi
+[2025-11-03 21:16:33.551] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 303
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 182
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:16:33.991] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:16:33.994] [INF] CORS policy execution failed.
+[2025-11-03 21:16:33.995] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:16:33.995] [INF] CORS policy execution successful.
+[2025-11-03 21:16:33.995] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:16:33.999] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:16:33.999] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:16:34.000] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:16:34.000] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:16:34.001] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 9.3912ms
+[2025-11-03 21:16:34.149] [INF] Rasterizando PDF con Ghostscript → PNG(s) 72mm @ 203dpi
+[2025-11-03 21:16:34.785] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:16:34.786] [INF] CORS policy execution failed.
+[2025-11-03 21:16:34.786] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:16:34.786] [INF] CORS policy execution successful.
+[2025-11-03 21:16:34.787] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:16:34.807] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:16:34.807] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:16:34.808] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:16:34.808] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:16:34.808] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 22.4670ms
+[2025-11-03 21:16:35.009] [INF] Rasterizando PDF con Ghostscript → PNG(s) 72mm @ 203dpi
+[2025-11-03 21:16:35.433] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:16:35.434] [INF] CORS policy execution failed.
+[2025-11-03 21:16:35.434] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:16:35.434] [INF] CORS policy execution successful.
+[2025-11-03 21:16:35.434] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:16:35.435] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:16:35.435] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:16:35.436] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:16:35.436] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 2.4261ms
+[2025-11-03 21:16:35.436] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:16:35.632] [INF] Rasterizando PDF con Ghostscript → PNG(s) 72mm @ 203dpi
+[2025-11-03 21:16:36.880] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 303
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 182
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:16:37.605] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 303
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 182
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:16:37.969] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 303
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 182
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:20:38.205] [INF] Cerrando aplicación desde el system tray...
+[2025-11-03 21:20:38.264] [INF] Application is shutting down...
+[2025-11-03 21:20:38.319] [INF] Icono del system tray eliminado
+[2025-11-03 21:20:38.319] [INF] LitePrintService detenido.
+[2025-11-03 21:20:47.344] [INF] Iniciando LitePrint API Service
+[2025-11-03 21:20:47.395] [INF] Servidor escuchando en: http://localhost:9005
+[2025-11-03 21:20:47.396] [INF] CORS configurado para: https://lm-pos.lighttechnology.online
+[2025-11-03 21:20:47.412] [INF] Inicializando LitePrintService...
+[2025-11-03 21:20:47.472] [INF] Now listening on: http://0.0.0.0:9005
+[2025-11-03 21:20:47.473] [INF] Application started. Press Ctrl+C to shut down.
+[2025-11-03 21:20:47.474] [INF] Hosting environment: Production
+[2025-11-03 21:20:47.474] [INF] Content root path: C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\bin\Release\net6.0-windows\win-x64\
+[2025-11-03 21:20:47.567] [INF] Icono del system tray creado correctamente
+[2025-11-03 21:20:47.622] [INF] LitePrintService iniciado correctamente.
+[2025-11-03 21:20:51.985] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:20:52.066] [INF] CORS policy execution failed.
+[2025-11-03 21:20:52.066] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:20:52.068] [INF] CORS policy execution successful.
+[2025-11-03 21:20:52.112] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:20:52.179] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:20:52.183] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:20:52.194] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:20:52.211] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:20:52.214] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 235.2974ms
+[2025-11-03 21:20:52.603] [INF] Rasterizando PDF → PNG(s) 72mm @ 203dpi
+[2025-11-03 21:20:54.711] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 364
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 183
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:20:55.358] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:20:55.361] [INF] CORS policy execution failed.
+[2025-11-03 21:20:55.361] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:20:55.361] [INF] CORS policy execution successful.
+[2025-11-03 21:20:55.361] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:20:55.363] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:20:55.363] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:20:55.364] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:20:55.364] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:20:55.365] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 6.4407ms
+[2025-11-03 21:20:55.512] [INF] Rasterizando PDF → PNG(s) 72mm @ 203dpi
+[2025-11-03 21:20:56.115] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:20:56.115] [INF] CORS policy execution failed.
+[2025-11-03 21:20:56.115] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:20:56.116] [INF] CORS policy execution successful.
+[2025-11-03 21:20:56.117] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:20:56.141] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:20:56.141] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:20:56.145] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:20:56.145] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 29.9269ms
+[2025-11-03 21:20:56.155] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:20:56.362] [INF] Rasterizando PDF → PNG(s) 72mm @ 203dpi
+[2025-11-03 21:20:57.300] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:20:57.300] [INF] CORS policy execution failed.
+[2025-11-03 21:20:57.300] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:20:57.300] [INF] CORS policy execution successful.
+[2025-11-03 21:20:57.300] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:20:57.302] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:20:57.302] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:20:57.303] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:20:57.303] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 3.1168ms
+[2025-11-03 21:20:57.303] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:20:57.489] [INF] Rasterizando PDF → PNG(s) 72mm @ 203dpi
+[2025-11-03 21:20:57.981] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:20:57.982] [INF] CORS policy execution failed.
+[2025-11-03 21:20:57.982] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:20:57.982] [INF] CORS policy execution successful.
+[2025-11-03 21:20:57.982] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:20:57.988] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:20:57.989] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:20:57.989] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:20:57.989] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 7.5423ms
+[2025-11-03 21:20:57.989] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:20:58.053] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 364
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 183
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:20:58.192] [INF] Rasterizando PDF → PNG(s) 72mm @ 203dpi
+[2025-11-03 21:20:59.158] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 364
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 183
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:21:00.231] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 364
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 183
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:21:00.748] [ERR] ❌ ERROR en impresión en segundo plano: gswin64c.exe exceeded timeout
+System.TimeoutException: gswin64c.exe exceeded timeout
+   at LitePrintApi.Services.PrinterService.RunProcessOrThrow(String exe, String args, TimeSpan timeout) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 364
+   at LitePrintApi.Services.PrinterService.PrintPdfAsync(String printerName, String base64Pdf, Int32 copies, Boolean removeMargins) in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Services\PrinterService.cs:line 183
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__18>d.MoveNext() in C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\Program.cs:line 234
+[2025-11-03 21:25:24.773] [INF] Cerrando aplicación desde el system tray...
+[2025-11-03 21:25:24.822] [INF] Application is shutting down...
+[2025-11-03 21:25:24.849] [INF] Icono del system tray eliminado
+[2025-11-03 21:25:24.849] [INF] LitePrintService detenido.
+[2025-11-03 21:25:50.031] [INF] Iniciando LitePrint API Service
+[2025-11-03 21:25:50.082] [INF] Servidor escuchando en: http://localhost:9005
+[2025-11-03 21:25:50.082] [INF] CORS configurado para: https://lm-pos.lighttechnology.online
+[2025-11-03 21:25:50.096] [INF] Inicializando LitePrintService...
+[2025-11-03 21:25:50.157] [INF] Now listening on: http://0.0.0.0:9005
+[2025-11-03 21:25:50.159] [INF] Application started. Press Ctrl+C to shut down.
+[2025-11-03 21:25:50.160] [INF] Hosting environment: Production
+[2025-11-03 21:25:50.160] [INF] Content root path: C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\bin\Release\net6.0-windows\win-x64\
+[2025-11-03 21:25:50.282] [INF] Icono del system tray creado correctamente
+[2025-11-03 21:25:50.303] [INF] LitePrintService iniciado correctamente.
+[2025-11-03 21:25:54.693] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:25:54.764] [INF] CORS policy execution failed.
+[2025-11-03 21:25:54.765] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:25:54.767] [INF] CORS policy execution successful.
+[2025-11-03 21:25:54.801] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:25:54.859] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:25:54.862] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:25:54.872] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:25:54.888] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:25:54.891] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 204.4200ms
+[2025-11-03 21:25:54.917] [INF] Decodificando PDF desde base64...
+[2025-11-03 21:25:54.918] [INF] PDF decodificado exitosamente. Tamaño: 259884 bytes
+[2025-11-03 21:25:54.920] [INF] Guardando PDF temporal en: C:\Users\User\AppData\Local\Temp\print_330c9934-f498-414b-9fd7-39f93401d514.pdf
+[2025-11-03 21:25:54.922] [INF] Verificando existencia de impresora: POS80 Printer
+[2025-11-03 21:25:55.212] [INF] Impresora encontrada: POS80 Printer
+[2025-11-03 21:25:55.212] [INF] Impresora POS detectada: true
+[2025-11-03 21:25:55.212] [INF] Buscando instalación de Ghostscript...
+[2025-11-03 21:25:55.212] [INF] Ghostscript encontrado en: C:\Program Files\gs\gs10.05.0\bin\gswin64c.exe
+[2025-11-03 21:25:55.212] [INF] Aplicando configuración especial para impresora POS de 80 columnas
+[2025-11-03 21:25:55.212] [INF] Argumentos de Ghostscript: -dNOPAUSE -dBATCH -dPDFFitPage -dFIXEDMEDIA -dDEVICEWIDTHPOINTS=576 -dDEVICEHEIGHTPOINTS=9999 -dAutoRotatePages=/None -dUseCropBox -c "<</BeginPage { 0 0 translate }>> setpagedevice" -sDEVICE=mswinpr2 -sOutputFile="%printer%POS80 Printer" "C:\Users\User\AppData\Local\Temp\print_330c9934-f498-414b-9fd7-39f93401d514.pdf"
+[2025-11-03 21:25:55.212] [INF] Iniciando impresión copia 1 de 1
+[2025-11-03 21:25:55.226] [INF] Proceso Ghostscript iniciado (PID: 7432)
+[2025-11-03 21:25:55.986] [INF] Ghostscript terminó con código de salida: 0
+[2025-11-03 21:25:55.986] [INF] Salida de Ghostscript: GPL Ghostscript RELEASE CANDIDATE 1 10.05.0 (2025-03-17)
+Copyright (C) 2025 Artifex Software, Inc.  All rights reserved.
+This software is supplied under the GNU AGPLv3 and comes with NO WARRANTY:
+see the file COPYING for details.
+Processing pages 1 through 1.
+Page 1
+Loading font Helvetica (or substitute) from %rom%Resource/Font/NimbusSans-Regular
+Loading font Helvetica-Bold (or substitute) from %rom%Resource/Font/NimbusSans-Bold
+
+[2025-11-03 21:25:55.986] [INF] ✅ Copia 1 impresa exitosamente
+[2025-11-03 21:25:55.987] [INF] ✅ Impresión completada exitosamente en segundo plano
+[2025-11-03 21:26:01.011] [INF] Archivo temporal eliminado: C:\Users\User\AppData\Local\Temp\print_330c9934-f498-414b-9fd7-39f93401d514.pdf
+[2025-11-03 21:26:16.793] [INF] Request starting HTTP/1.1 GET http://localhost:9005/swagger/index.html - -
+[2025-11-03 21:26:16.917] [INF] Request finished HTTP/1.1 GET http://localhost:9005/swagger/index.html - - - 200 - text/html;charset=utf-8 124.4420ms
+[2025-11-03 21:26:17.407] [INF] Request starting HTTP/1.1 GET http://localhost:9005/swagger/v1/swagger.json - -
+[2025-11-03 21:26:17.651] [INF] Request finished HTTP/1.1 GET http://localhost:9005/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 243.5642ms
+[2025-11-03 21:26:28.682] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346603
+[2025-11-03 21:26:28.682] [INF] CORS policy execution failed.
+[2025-11-03 21:26:28.682] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:26:28.683] [INF] CORS policy execution successful.
+[2025-11-03 21:26:28.683] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:26:28.689] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:26:28.689] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:26:28.691] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:26:28.691] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346603 - 200 - application/json;+charset=utf-8 9.2097ms
+[2025-11-03 21:26:28.691] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:26:28.692] [INF] Decodificando PDF desde base64...
+[2025-11-03 21:26:28.693] [INF] PDF decodificado exitosamente. Tamaño: 259884 bytes
+[2025-11-03 21:26:28.694] [INF] Guardando PDF temporal en: C:\Users\User\AppData\Local\Temp\print_3533cbf3-3621-42fa-a542-9344cc34eaf5.pdf
+[2025-11-03 21:26:28.695] [INF] Verificando existencia de impresora: POS80 Printer
+[2025-11-03 21:26:28.914] [INF] Impresora encontrada: POS80 Printer
+[2025-11-03 21:26:28.914] [INF] Impresora POS detectada: true
+[2025-11-03 21:26:28.914] [INF] Buscando instalación de Ghostscript...
+[2025-11-03 21:26:28.914] [INF] Ghostscript encontrado en: C:\Program Files\gs\gs10.05.0\bin\gswin64c.exe
+[2025-11-03 21:26:28.915] [INF] Aplicando configuración especial para impresora POS de 80 columnas
+[2025-11-03 21:26:28.915] [INF] Argumentos de Ghostscript: -dNOPAUSE -dBATCH -dPDFFitPage -dFIXEDMEDIA -dDEVICEWIDTHPOINTS=576 -dDEVICEHEIGHTPOINTS=9999 -dAutoRotatePages=/None -dUseCropBox -c "<</BeginPage { 0 0 translate }>> setpagedevice" -sDEVICE=mswinpr2 -sOutputFile="%printer%POS80 Printer" "C:\Users\User\AppData\Local\Temp\print_3533cbf3-3621-42fa-a542-9344cc34eaf5.pdf"
+[2025-11-03 21:26:28.915] [INF] Iniciando impresión copia 1 de 1
+[2025-11-03 21:26:28.923] [INF] Proceso Ghostscript iniciado (PID: 14800)
+[2025-11-03 21:26:29.948] [INF] Ghostscript terminó con código de salida: 0
+[2025-11-03 21:26:29.948] [INF] Salida de Ghostscript: GPL Ghostscript RELEASE CANDIDATE 1 10.05.0 (2025-03-17)
+Copyright (C) 2025 Artifex Software, Inc.  All rights reserved.
+This software is supplied under the GNU AGPLv3 and comes with NO WARRANTY:
+see the file COPYING for details.
+Processing pages 1 through 1.
+Page 1
+Loading font Helvetica (or substitute) from %rom%Resource/Font/NimbusSans-Regular
+Loading font Helvetica-Bold (or substitute) from %rom%Resource/Font/NimbusSans-Bold
+
+[2025-11-03 21:26:29.948] [INF] ✅ Copia 1 impresa exitosamente
+[2025-11-03 21:26:29.948] [INF] ✅ Impresión completada exitosamente en segundo plano
+[2025-11-03 21:26:34.958] [INF] Archivo temporal eliminado: C:\Users\User\AppData\Local\Temp\print_3533cbf3-3621-42fa-a542-9344cc34eaf5.pdf
+[2025-11-03 21:26:44.363] [INF] Request starting HTTP/1.1 GET http://localhost:9005/printers - -
+[2025-11-03 21:26:44.363] [INF] Executing endpoint 'HTTP: GET /printers'
+[2025-11-03 21:26:44.403] [INF] Writing value of type '<>f__AnonymousType1`2[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:26:44.407] [INF] Executed endpoint 'HTTP: GET /printers'
+[2025-11-03 21:26:44.407] [INF] Request finished HTTP/1.1 GET http://localhost:9005/printers - - - 200 - application/json;+charset=utf-8 43.9032ms
+[2025-11-03 21:27:22.674] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346602
+[2025-11-03 21:27:22.674] [INF] CORS policy execution failed.
+[2025-11-03 21:27:22.674] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:27:22.674] [INF] CORS policy execution successful.
+[2025-11-03 21:27:22.674] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:27:22.678] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:27:22.678] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:27:22.678] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:27:22.678] [INF] Decodificando PDF desde base64...
+[2025-11-03 21:27:22.678] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:27:22.678] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346602 - 200 - application/json;+charset=utf-8 4.4350ms
+[2025-11-03 21:27:22.680] [INF] PDF decodificado exitosamente. Tamaño: 259884 bytes
+[2025-11-03 21:27:22.681] [INF] Guardando PDF temporal en: C:\Users\User\AppData\Local\Temp\print_47adce63-a670-4e68-959e-10e32efad153.pdf
+[2025-11-03 21:27:22.685] [INF] Verificando existencia de impresora: POS80 Printer
+[2025-11-03 21:27:22.865] [INF] Impresora encontrada: POS80 Printer
+[2025-11-03 21:27:22.865] [INF] Impresora POS detectada: true
+[2025-11-03 21:27:22.865] [INF] Buscando instalación de Ghostscript...
+[2025-11-03 21:27:22.865] [INF] Ghostscript encontrado en: C:\Program Files\gs\gs10.05.0\bin\gswin64c.exe
+[2025-11-03 21:27:22.865] [INF] Aplicando configuración especial para impresora POS de 80 columnas
+[2025-11-03 21:27:22.865] [INF] Argumentos de Ghostscript: -dNOPAUSE -dBATCH -dPDFFitPage -dFIXEDMEDIA -dDEVICEWIDTHPOINTS=576 -dDEVICEHEIGHTPOINTS=9999 -dAutoRotatePages=/None -dUseCropBox -c "<</BeginPage { 0 0 translate }>> setpagedevice" -sDEVICE=mswinpr2 -sOutputFile="%printer%POS80 Printer" "C:\Users\User\AppData\Local\Temp\print_47adce63-a670-4e68-959e-10e32efad153.pdf"
+[2025-11-03 21:27:22.865] [INF] Iniciando impresión copia 1 de 1
+[2025-11-03 21:27:22.871] [INF] Proceso Ghostscript iniciado (PID: 12800)
+[2025-11-03 21:27:23.712] [INF] Ghostscript terminó con código de salida: 0
+[2025-11-03 21:27:23.712] [INF] Salida de Ghostscript: GPL Ghostscript RELEASE CANDIDATE 1 10.05.0 (2025-03-17)
+Copyright (C) 2025 Artifex Software, Inc.  All rights reserved.
+This software is supplied under the GNU AGPLv3 and comes with NO WARRANTY:
+see the file COPYING for details.
+Processing pages 1 through 1.
+Page 1
+Loading font Helvetica (or substitute) from %rom%Resource/Font/NimbusSans-Regular
+Loading font Helvetica-Bold (or substitute) from %rom%Resource/Font/NimbusSans-Bold
+
+[2025-11-03 21:27:23.712] [INF] ✅ Copia 1 impresa exitosamente
+[2025-11-03 21:27:23.714] [INF] ✅ Impresión completada exitosamente en segundo plano
+[2025-11-03 21:27:28.718] [INF] Archivo temporal eliminado: C:\Users\User\AppData\Local\Temp\print_47adce63-a670-4e68-959e-10e32efad153.pdf
+[2025-11-03 21:38:17.109] [INF] Cerrando aplicación desde el system tray...
+[2025-11-03 21:38:17.119] [INF] Application is shutting down...
+[2025-11-03 21:38:17.140] [INF] Icono del system tray eliminado
+[2025-11-03 21:38:17.141] [INF] LitePrintService detenido.
+[2025-11-03 21:38:53.205] [INF] Iniciando LitePrint API Service
+[2025-11-03 21:38:53.257] [INF] Servidor escuchando en: http://localhost:9005
+[2025-11-03 21:38:53.257] [INF] CORS configurado para: https://lm-pos.lighttechnology.online
+[2025-11-03 21:38:53.273] [INF] Inicializando LitePrintService...
+[2025-11-03 21:38:53.337] [INF] Now listening on: http://0.0.0.0:9005
+[2025-11-03 21:38:53.339] [INF] Application started. Press Ctrl+C to shut down.
+[2025-11-03 21:38:53.340] [INF] Hosting environment: Production
+[2025-11-03 21:38:53.340] [INF] Content root path: C:\Users\User\Desktop\New folder (2)\printer_api\LitePrintApi\bin\Release\net6.0-windows\win-x64\
+[2025-11-03 21:38:53.464] [INF] Icono del system tray creado correctamente
+[2025-11-03 21:38:53.481] [INF] LitePrintService iniciado correctamente.
+[2025-11-03 21:39:13.423] [INF] Request starting HTTP/1.1 POST http://localhost:9005/print application/json 346602
+[2025-11-03 21:39:13.491] [INF] CORS policy execution failed.
+[2025-11-03 21:39:13.492] [INF] Request origin http://localhost:9005 does not have permission to access the resource.
+[2025-11-03 21:39:13.493] [INF] CORS policy execution successful.
+[2025-11-03 21:39:13.527] [INF] Executing endpoint 'HTTP: POST /print'
+[2025-11-03 21:39:13.582] [INF] Iniciando impresión: Printer=POS80 Printer, Copies=1
+[2025-11-03 21:39:13.587] [INF] Ejecutando impresión en segundo plano...
+[2025-11-03 21:39:13.594] [INF] Writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]' with status code '200'.
+[2025-11-03 21:39:13.607] [INF] Executed endpoint 'HTTP: POST /print'
+[2025-11-03 21:39:13.609] [INF] Request finished HTTP/1.1 POST http://localhost:9005/print application/json 346602 - 200 - application/json;+charset=utf-8 192.7663ms
+[2025-11-03 21:39:13.642] [INF] 🚀 INICIANDO PROCESO DE IMPRESIÓN
+[2025-11-03 21:39:13.642] [INF] Impresora destino: POS80 Printer
+[2025-11-03 21:39:13.642] [INF] Copias solicitadas: 1
+[2025-11-03 21:39:13.642] [INF] 📄 Decodificando PDF desde base64...
+[2025-11-03 21:39:13.644] [INF] ✅ PDF decodificado correctamente. Tamaño: 259884 bytes
+[2025-11-03 21:39:13.645] [INF] 💾 Guardando PDF temporal en: C:\Users\User\AppData\Local\Temp\print_306d1d11-8abd-4129-b745-e7eaf6149270.pdf
+[2025-11-03 21:39:13.647] [INF] ✅ PDF temporal guardado correctamente
+[2025-11-03 21:39:13.647] [INF] 🔍 Verificando existencia de impresora: POS80 Printer
+[2025-11-03 21:39:13.920] [INF] ✅ Impresora encontrada: POS80 Printer
+[2025-11-03 21:39:13.920] [INF] 🔎 Buscando Ghostscript...
+[2025-11-03 21:39:13.924] [INF] Buscando Ghostscript en ubicaciones comunes...
+[2025-11-03 21:39:13.926] [INF] Buscando Ghostscript en PATH...
+[2025-11-03 21:39:14.178] [INF] ✅ Ghostscript encontrado via WHERE: C:\Program Files\gs\gs10.05.0\bin\gswin64c.exe
+[2025-11-03 21:39:14.178] [INF] ✅ Ghostscript encontrado en: C:\Program Files\gs\gs10.05.0\bin\gswin64c.exe
+[2025-11-03 21:39:14.179] [INF] 📠 Tipo de impresora detectada - POS: true
+[2025-11-03 21:39:14.179] [INF] ⚙️ Configurando para impresora POS de 80 columnas...
+[2025-11-03 21:39:14.179] [INF] 🔧 Argumentos de Ghostscript: -dNOPAUSE -dBATCH -dPDFFitPage -dFIXEDMEDIA -dDEVICEWIDTHPOINTS=576 -dDEVICEHEIGHTPOINTS=9999 -dAutoRotatePages=/None -dUseCropBox -sDEVICE=mswinpr2 -sOutputFile="%printer%POS80 Printer" "C:\Users\User\AppData\Local\Temp\print_306d1d11-8abd-4129-b745-e7eaf6149270.pdf"
+[2025-11-03 21:39:14.179] [INF] 🖨️ Iniciando proceso de impresión...
+[2025-11-03 21:39:14.179] [INF] 📋 Imprimiendo copia 1 de 1
+[2025-11-03 21:39:14.179] [INF] ▶️ Iniciando proceso Ghostscript...
+[2025-11-03 21:39:14.187] [INF] ✅ Proceso Ghostscript iniciado (PID: 2764)
+[2025-11-03 21:39:14.363] [INF] Ghostscript Output: GPL Ghostscript RELEASE CANDIDATE 1 10.05.0 (2025-03-17)
+[2025-11-03 21:39:14.363] [INF] Ghostscript Output: Copyright (C) 2025 Artifex Software, Inc.  All rights reserved.
+[2025-11-03 21:39:14.363] [INF] Ghostscript Output: This software is supplied under the GNU AGPLv3 and comes with NO WARRANTY:
+[2025-11-03 21:39:14.364] [INF] Ghostscript Output: see the file COPYING for details.
+[2025-11-03 21:39:14.832] [INF] Ghostscript Output: Processing pages 1 through 1.
+[2025-11-03 21:39:14.846] [INF] Ghostscript Output: Page 1
+[2025-11-03 21:39:15.082] [INF] Ghostscript Output: Loading font Helvetica (or substitute) from %rom%Resource/Font/NimbusSans-Regular
+[2025-11-03 21:39:15.207] [INF] Ghostscript Output: Loading font Helvetica-Bold (or substitute) from %rom%Resource/Font/NimbusSans-Bold
+[2025-11-03 21:39:16.880] [INF] 📝 Ghostscript finalizó con código: 0
+[2025-11-03 21:39:16.880] [INF] ✅ Copia 1 impresa exitosamente
+[2025-11-03 21:39:16.880] [INF] 🎉 ¡IMPRESIÓN COMPLETADA EXITOSAMENTE!
+[2025-11-03 21:39:16.881] [INF] 🧹 Archivo temporal eliminado: C:\Users\User\AppData\Local\Temp\print_306d1d11-8abd-4129-b745-e7eaf6149270.pdf
+[2025-11-03 21:39:16.882] [INF] ✅ Impresión completada exitosamente en segundo plano
+[2025-11-03 21:41:04.911] [INF] Cerrando aplicación desde el system tray...
+[2025-11-03 21:41:04.925] [INF] Application is shutting down...
+[2025-11-03 21:41:04.961] [INF] Icono del system tray eliminado
+[2025-11-03 21:41:04.961] [INF] LitePrintService detenido.
