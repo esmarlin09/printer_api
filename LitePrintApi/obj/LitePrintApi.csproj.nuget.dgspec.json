@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "/Users/user/Desktop/Dev/printer_api/LitePrintApi/LitePrintApi.csproj": {}
+    "C:\\Users\\User\\Desktop\\New folder (2)\\printer_api\\LitePrintApi\\LitePrintApi.csproj": {}
   },
   "projects": {
-    "/Users/user/Desktop/Dev/printer_api/LitePrintApi/LitePrintApi.csproj": {
+    "C:\\Users\\User\\Desktop\\New folder (2)\\printer_api\\LitePrintApi\\LitePrintApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/user/Desktop/Dev/printer_api/LitePrintApi/LitePrintApi.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Desktop\\New folder (2)\\printer_api\\LitePrintApi\\LitePrintApi.csproj",
         "projectName": "LitePrintApi",
-        "projectPath": "/Users/user/Desktop/Dev/printer_api/LitePrintApi/LitePrintApi.csproj",
-        "packagesPath": "/Users/user/.nuget/packages/",
-        "outputPath": "/Users/user/Desktop/Dev/printer_api/LitePrintApi/obj/",
+        "projectPath": "C:\\Users\\User\\Desktop\\New folder (2)\\printer_api\\LitePrintApi\\LitePrintApi.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\User\\Desktop\\New folder (2)\\printer_api\\LitePrintApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/user/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net6.0"
+          "net6.0-windows"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net6.0": {
-            "targetAlias": "net6.0",
+          "net6.0-windows7.0": {
+            "targetAlias": "net6.0-windows",
             "projectReferences": {}
           }
         },
@@ -35,12 +35,12 @@
         }
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
+        "net6.0-windows7.0": {
+          "targetAlias": "net6.0-windows",
           "dependencies": {
             "Microsoft.Extensions.Hosting.WindowsServices": {
               "target": "Package",
-              "version": "[6.0.5, )"
+              "version": "[6.0.0, )"
             },
             "Serilog.AspNetCore": {
               "target": "Package",
@@ -60,7 +60,7 @@
             },
             "System.Management": {
               "target": "Package",
-              "version": "[6.0.2, )"
+              "version": "[6.0.0, )"
             }
           },
           "imports": [
@@ -80,9 +80,12 @@
             },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.428/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.428\\RuntimeIdentifierGraph.json"
         }
       }
     }
