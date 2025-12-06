@@ -1,0 +1,44 @@
+{
+  "printer": "Epson LX-350",
+  "company": {
+    "name": "REG DIESEL S.R.L.",
+    "rnc": "130-69344-7",
+    "address": "LIMONAL ARRIBA, LICEY, SANTIAGO",
+    "city": "SANTIAGO",
+    "country": "REP. DOM.",
+    "phone": "809-580-7297",
+    "email": "REGDIESEL.SRL@GMAIL.COM"
+  },
+  "customer": {
+    "name": "PRODUCTORA DE SEMILLAS SELECTAS SRL",
+    "rnc": "102336891",
+    "phone": "809-722-7774",
+    "address": "LA CANELA"
+  },
+  "invoice": {
+    "saleDate": "2025-12-06T00:00:00",
+    "invoicedBy": "YAZMIN SANTOS",
+    "dueDate": "2026-01-05T00:00:00",
+    "fiscalCreditInvoice": "80100002739",
+    "ncfExpirationDate": "2026-12-31T00:00:00",
+    "invoiceNumber": "3955"
+  },
+  "items": [
+    {
+      "quantity": 300.00,
+      "description": "DIESEL REGULAR",
+      "unitPrice": 224.80,
+      "subTotal": 67440.00
+    }
+  ],
+  "totals": {
+    "subTotal": 67440.00,
+    "discount": 6000.00,
+    "itbis": 0.00,
+    "total": 61440.00
+  },
+  "legalNote": "El comprador reconoce y acepta que el pago despues del vencimiento se agre el 3% mora aplicado al saldo pendiente a favor de REG DIESEL SRL, conforme a lo drablecido en el Código Civil Dominicano. Este recargo será exigible sin necesidad de requerimoto judicial.",
+  "addCutCommand": true,
+  "feedLinesCount": 3
+}
+

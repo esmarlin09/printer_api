@@ -1,20 +1,51 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach"
-        },
-        {
-            "name": "C#: LitePrintApi",
-            "type": "dotnet",
-            "request": "launch",
-            "projectPath": "${workspaceFolder}\\LitePrintApi\\LitePrintApi.csproj",
-            "launchConfigurationId": "TargetFramework=;LitePrintApi"
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "LitePrintApi (Windows)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/LitePrintApi/bin/Debug/net6.0-windows/LitePrintApi.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/LitePrintApi",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "http://localhost:9005/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:9005",
+        "DOTNET_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      },
+      "console": "internalConsole",
+      "justMyCode": true,
+      "requireExactSource": false,
+      "symbolOptions": {
+        "searchPaths": [
+          "${workspaceFolder}/LitePrintApi/bin/Debug/net6.0-windows"
+        ]
+      }
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    },
+    {
+      "name": "C#: LitePrintApi",
+      "type": "dotnet",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}\\LitePrintApi\\LitePrintApi.csproj",
+      "launchConfigurationId": "TargetFramework=;LitePrintApi"
+    }
+  ]
 }

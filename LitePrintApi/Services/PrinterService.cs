@@ -13,6 +13,8 @@ public interface IPrinterService
     string GetDefaultPrinterName();
     string GetDeviceId();
     Task<bool> PrintPdfAsync(string printerName, string base64Pdf, int copies, bool removeMargins);
+    Task<bool> PrintInvoiceAsync(InvoiceRequest request);
+    Task<bool> PrintRawAsync(string printerName, string content, string? encoding = null);
 }
 
 public class PrinterService : IPrinterService
@@ -459,5 +461,150 @@ public class PrinterService : IPrinterService
 
         _logger.LogWarning("❌ Ghostscript no encontrado en ninguna ubicación conocida");
         return null;
+    }
+
+    /// <summary>
+    /// Imprime una factura formateada en la impresora especificada (RAW)
+    /// </summary>
+    public async Task<bool> PrintInvoiceAsync(InvoiceRequest request)
+    {
+        try
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                throw new PlatformNotSupportedException("Printing is only supported on Windows");
+            }
+
+            _logger.LogInformation("🧾 INICIANDO IMPRESIÓN DE FACTURA");
+            _logger.LogInformation("Impresora destino: {Printer}", request.Printer);
+            _logger.LogInformation("Número de factura: {InvoiceNumber}", request.Invoice.InvoiceNumber);
+            _logger.LogInformation("Cliente: {CustomerName}", request.Customer.Name);
+
+            // Verificar que la impresora existe
+            _logger.LogInformation("🔍 Verificando existencia de impresora: {Printer}", request.Printer);
+            bool printerFound = GetPrinterNames().Any(p => p.Equals(request.Printer, StringComparison.OrdinalIgnoreCase));
+
+            if (!printerFound)
+            {
+                _logger.LogError("❌ Impresora no encontrada: {Printer}", request.Printer);
+                _logger.LogInformation("Impresoras disponibles: {Printers}", string.Join(", ", GetPrinterNames()));
+                throw new ArgumentException($"Impresora '{request.Printer}' no encontrada");
+            }
+
+            _logger.LogInformation("✅ Impresora encontrada: {Printer}", request.Printer);
+
+            // Formatear la factura
+            _logger.LogInformation("📝 Formateando factura...");
+            var formatter = new InvoiceFormatter();
+            string formattedContent = formatter.FormatInvoice(request);
+            
+            _logger.LogInformation("✅ Factura formateada. Longitud: {Length} caracteres", formattedContent.Length);
+
+            // Determinar encoding
+            Encoding encoding = Encoding.UTF8;
+            if (!string.IsNullOrEmpty(request.Encoding) && request.Encoding.Equals("Windows-1252", StringComparison.OrdinalIgnoreCase))
+            {
+                encoding = Encoding.GetEncoding(1252);
+            }
+            else if (!string.IsNullOrEmpty(request.Encoding) && request.Encoding.Equals("ASCII", StringComparison.OrdinalIgnoreCase))
+            {
+                encoding = Encoding.ASCII;
+            }
+
+            // Enviar a la impresora (RAW)
+            _logger.LogInformation("🖨️ Enviando factura a la impresora (RAW)...");
+            
+            // Ejecutar en thread pool para no bloquear
+            bool success = await Task.Run(() =>
+            {
+                try
+                {
+                    return RawPrinterHelper.SendStringToPrinter(request.Printer, formattedContent, encoding);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "❌ Error al enviar datos a la impresora");
+                    throw;
+                }
+            });
+
+            if (success)
+            {
+                _logger.LogInformation("🎉 ¡FACTURA IMPRESA EXITOSAMENTE!");
+                return true;
+            }
+            else
+            {
+                _logger.LogError("❌ Error al imprimir factura (retornó false)");
+                throw new InvalidOperationException("Error al enviar datos a la impresora");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "❌ ERROR CRÍTICO al imprimir factura");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Imprime contenido RAW directamente a la impresora
+    /// </summary>
+    public async Task<bool> PrintRawAsync(string printerName, string content, string? encoding = null)
+    {
+        try
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                throw new PlatformNotSupportedException("Printing is only supported on Windows");
+            }
+
+            _logger.LogInformation("🖨️ IMPRESIÓN RAW");
+            _logger.LogInformation("Impresora destino: {Printer}", printerName);
+            _logger.LogInformation("Longitud del contenido: {Length} caracteres", content.Length);
+
+            // Verificar que la impresora existe
+            bool printerFound = GetPrinterNames().Any(p => p.Equals(printerName, StringComparison.OrdinalIgnoreCase));
+
+            if (!printerFound)
+            {
+                _logger.LogError("❌ Impresora no encontrada: {Printer}", printerName);
+                throw new ArgumentException($"Impresora '{printerName}' no encontrada");
+            }
+
+            // Determinar encoding
+            Encoding enc = Encoding.UTF8;
+            if (!string.IsNullOrEmpty(encoding))
+            {
+                if (encoding.Equals("Windows-1252", StringComparison.OrdinalIgnoreCase))
+                {
+                    enc = Encoding.GetEncoding(1252);
+                }
+                else if (encoding.Equals("ASCII", StringComparison.OrdinalIgnoreCase))
+                {
+                    enc = Encoding.ASCII;
+                }
+            }
+
+            // Enviar a la impresora
+            bool success = await Task.Run(() =>
+            {
+                return RawPrinterHelper.SendStringToPrinter(printerName, content, enc);
+            });
+
+            if (success)
+            {
+                _logger.LogInformation("✅ Impresión RAW completada exitosamente");
+                return true;
+            }
+            else
+            {
+                throw new InvalidOperationException("Error al enviar datos a la impresora");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "❌ ERROR al imprimir RAW");
+            throw;
+        }
     }
 }

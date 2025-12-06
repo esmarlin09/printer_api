@@ -248,6 +248,142 @@ app.MapPost("/print", (PrintRequest request, IPrinterService printerService, ILo
     }
 }).WithTags("Print");
 
+// ✅ Endpoint para imprimir factura (RAW)
+app.MapPost("/print/invoice", async (InvoiceRequest request, IPrinterService printerService, ILogger<Program> logger) =>
+{
+    try
+    {
+        if (string.IsNullOrWhiteSpace(request.Printer))
+            return Results.BadRequest(new { error = "Printer is required" });
+
+        if (request.Company == null || string.IsNullOrWhiteSpace(request.Company.Name))
+            return Results.BadRequest(new { error = "Company information is required" });
+
+        if (request.Customer == null || string.IsNullOrWhiteSpace(request.Customer.Name))
+            return Results.BadRequest(new { error = "Customer information is required" });
+
+        if (request.Items == null || request.Items.Count == 0)
+            return Results.BadRequest(new { error = "At least one item is required" });
+
+        logger.LogInformation("Iniciando impresión de factura: Printer={Printer}, Invoice={InvoiceNumber}", 
+            request.Printer, request.Invoice.InvoiceNumber);
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                logger.LogInformation("Ejecutando impresión de factura en segundo plano...");
+                await printerService.PrintInvoiceAsync(request);
+                logger.LogInformation("✅ Factura impresa exitosamente en segundo plano");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "❌ ERROR al imprimir factura en segundo plano: {Error}", ex.Message);
+            }
+        });
+
+        return Results.Ok(new { message = "Invoice print job queued successfully" });
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error al procesar solicitud de impresión de factura");
+        return Results.Json(new { error = "Internal server error", details = ex.Message }, statusCode: 500);
+    }
+}).WithTags("Invoice");
+
+// ✅ Endpoint específico para Epson LX-350 (redirige a /print/invoice con configuración optimizada)
+app.MapPost("/print/epson-lx350/invoice", async (InvoiceRequest request, IPrinterService printerService, ILogger<Program> logger) =>
+{
+    try
+    {
+        // Validar que la impresora sea Epson LX-350
+        if (!string.IsNullOrWhiteSpace(request.Printer) && 
+            !request.Printer.Contains("LX-350", StringComparison.OrdinalIgnoreCase) &&
+            !request.Printer.Contains("LX350", StringComparison.OrdinalIgnoreCase))
+        {
+            logger.LogWarning("Advertencia: La impresora especificada no parece ser una Epson LX-350: {Printer}", request.Printer);
+        }
+
+        // Asegurar configuración óptima para LX-350
+        request.AddCutCommand = true;
+        request.FeedLinesCount = 3;
+
+        // Validaciones
+        if (string.IsNullOrWhiteSpace(request.Printer))
+            return Results.BadRequest(new { error = "Printer is required" });
+
+        if (request.Company == null || string.IsNullOrWhiteSpace(request.Company.Name))
+            return Results.BadRequest(new { error = "Company information is required" });
+
+        if (request.Customer == null || string.IsNullOrWhiteSpace(request.Customer.Name))
+            return Results.BadRequest(new { error = "Customer information is required" });
+
+        if (request.Items == null || request.Items.Count == 0)
+            return Results.BadRequest(new { error = "At least one item is required" });
+
+        logger.LogInformation("Iniciando impresión de factura (Epson LX-350): Printer={Printer}, Invoice={InvoiceNumber}", 
+            request.Printer, request.Invoice.InvoiceNumber);
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                logger.LogInformation("Ejecutando impresión de factura (LX-350) en segundo plano...");
+                await printerService.PrintInvoiceAsync(request);
+                logger.LogInformation("✅ Factura impresa exitosamente en segundo plano");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "❌ ERROR al imprimir factura en segundo plano: {Error}", ex.Message);
+            }
+        });
+
+        return Results.Ok(new { message = "Invoice print job queued successfully (Epson LX-350)" });
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error en endpoint específico Epson LX-350");
+        return Results.Json(new { error = "Internal server error", details = ex.Message }, statusCode: 500);
+    }
+}).WithTags("Invoice");
+
+// ✅ Endpoint para impresión RAW genérica
+app.MapPost("/print/raw", async (RawPrintRequest request, IPrinterService printerService, ILogger<Program> logger) =>
+{
+    try
+    {
+        if (string.IsNullOrWhiteSpace(request.Printer))
+            return Results.BadRequest(new { error = "Printer is required" });
+
+        if (string.IsNullOrWhiteSpace(request.Content))
+            return Results.BadRequest(new { error = "Content is required" });
+
+        logger.LogInformation("Iniciando impresión RAW: Printer={Printer}, Length={Length}", 
+            request.Printer, request.Content.Length);
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                logger.LogInformation("Ejecutando impresión RAW en segundo plano...");
+                await printerService.PrintRawAsync(request.Printer, request.Content, request.Encoding);
+                logger.LogInformation("✅ Impresión RAW completada exitosamente");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "❌ ERROR al imprimir RAW en segundo plano: {Error}", ex.Message);
+            }
+        });
+
+        return Results.Ok(new { message = "Raw print job queued successfully" });
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error al procesar solicitud de impresión RAW");
+        return Results.Json(new { error = "Internal server error", details = ex.Message }, statusCode: 500);
+    }
+}).WithTags("Print");
+
 static string GetDeviceId()
 {
     try
