@@ -13,6 +13,8 @@ public interface IPrinterService
     string GetDefaultPrinterName();
     string GetDeviceId();
     Task<bool> PrintPdfAsync(string printerName, string base64Pdf, int copies, bool removeMargins);
+    /// <summary>Envía ZPL en RAW a la cola de Windows (sin PDF ni Ghostscript).</summary>
+    Task<bool> PrintZplAsync(string printerName, string zpl, int copies);
 }
 
 public class PrinterService : IPrinterService
@@ -156,40 +158,7 @@ public class PrinterService : IPrinterService
             _logger.LogInformation("✅ PDF temporal guardado correctamente");
 
             // Paso 3: Verificar que la impresora existe
-            _logger.LogInformation("🔍 Verificando existencia de impresora: {Printer}", printerName);
-            bool printerFound = false;
-            try
-            {
-                using var searcher = new ManagementObjectSearcher(
-                    $"SELECT Name FROM Win32_Printer WHERE Name = '{printerName.Replace("'", "''")}'");
-
-                foreach (ManagementObject printerObj in searcher.Get())
-                {
-                    printerFound = true;
-                    break;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Advertencia al verificar impresora via WMI");
-                // Continuar con método alternativo
-            }
-
-            if (!printerFound)
-            {
-                // Método alternativo: verificar en lista de impresoras instaladas
-                var installedPrinters = GetPrinterNames();
-                printerFound = installedPrinters.Any(p => p.Equals(printerName, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!printerFound)
-            {
-                _logger.LogError("❌ Impresora no encontrada: {Printer}", printerName);
-                _logger.LogInformation("Impresoras disponibles: {Printers}", string.Join(", ", GetPrinterNames()));
-                throw new ArgumentException($"Impresora '{printerName}' no encontrada");
-            }
-
-            _logger.LogInformation("✅ Impresora encontrada: {Printer}", printerName);
+            EnsurePrinterExists(printerName);
 
             // Paso 4: Buscar Ghostscript
             _logger.LogInformation("🔎 Buscando Ghostscript...");
@@ -205,17 +174,34 @@ public class PrinterService : IPrinterService
             _logger.LogInformation("✅ Ghostscript encontrado en: {Path}", gsPath);
 
             // Paso 5: Detectar tipo de impresora y configurar argumentos
-            bool isPosPrinter = printerName.Contains("POS", StringComparison.OrdinalIgnoreCase) ||
+            bool isZebraLp2824 = IsZebraLp2824Printer(printerName);
+            bool isPosPrinter = !isZebraLp2824 && (
+                               printerName.Contains("POS", StringComparison.OrdinalIgnoreCase) ||
                                printerName.Contains("thermal", StringComparison.OrdinalIgnoreCase) ||
                                printerName.Contains("80", StringComparison.OrdinalIgnoreCase) ||
                                printerName.Contains("ticket", StringComparison.OrdinalIgnoreCase) ||
                                printerName.Contains("termica", StringComparison.OrdinalIgnoreCase) ||
-                               printerName.Contains("Epson TM", StringComparison.OrdinalIgnoreCase);
+                               printerName.Contains("Epson TM", StringComparison.OrdinalIgnoreCase));
 
-            _logger.LogInformation("📠 Tipo de impresora detectada - POS: {IsPosPrinter}", isPosPrinter);
+            _logger.LogInformation("📠 Tipo detectado - Zebra LP 2824: {IsZebra}, POS: {IsPosPrinter}", isZebraLp2824, isPosPrinter);
 
             string gsArguments;
-            if (isPosPrinter)
+            if (isZebraLp2824)
+            {
+                // LP 2824: etiqueta ~2" de ancho (72 pt/in → 144 pt). PDF debe dimensionarse a esa anchura para buen encaje.
+                _logger.LogInformation("⚙️ Configurando para Zebra LP 2824 (ancho ~2\")...");
+                gsArguments = $"-dNOPAUSE -dBATCH " +
+                              $"-dPDFFitPage " +
+                              $"-dFIXEDMEDIA " +
+                              $"-dDEVICEWIDTHPOINTS=144 " +
+                              $"-dDEVICEHEIGHTPOINTS=9999 " +
+                              $"-dAutoRotatePages=/None " +
+                              $"-dUseCropBox " +
+                              $"-sDEVICE=mswinpr2 " +
+                              $"-sOutputFile=\"%printer%{printerName}\" " +
+                              $"\"{tempFilePath}\"";
+            }
+            else if (isPosPrinter)
             {
                 _logger.LogInformation("⚙️ Configurando para impresora POS de 80 columnas...");
                 // Configuración optimizada para impresoras térmicas POS
@@ -373,6 +359,81 @@ public class PrinterService : IPrinterService
                 }
             }
         }
+    }
+
+    public Task<bool> PrintZplAsync(string printerName, string zpl, int copies)
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            throw new PlatformNotSupportedException("La impresión ZPL RAW solo está soportada en Windows.");
+
+        if (string.IsNullOrWhiteSpace(zpl))
+            throw new ArgumentException("Zpl no puede estar vacío.");
+
+        if (copies < 1)
+            throw new ArgumentOutOfRangeException(nameof(copies), "Copies debe ser al menos 1.");
+
+        _logger.LogInformation("🖨️ ZPL RAW: impresora={Printer}, copias={Copies}, bytes≈{Bytes}",
+            printerName, copies, Encoding.UTF8.GetByteCount(zpl));
+
+        EnsurePrinterExists(printerName);
+
+        byte[] payload = Encoding.UTF8.GetBytes(zpl);
+
+        return Task.Run(() =>
+        {
+            for (int i = 0; i < copies; i++)
+            {
+                WindowsRawPrint.SendBytes(printerName, payload);
+                _logger.LogInformation("✅ ZPL enviado, copia {N} de {Total}", i + 1, copies);
+            }
+
+            return true;
+        });
+    }
+
+    private void EnsurePrinterExists(string printerName)
+    {
+        _logger.LogInformation("🔍 Verificando existencia de impresora: {Printer}", printerName);
+
+        bool printerFound = false;
+        try
+        {
+            using var searcher = new ManagementObjectSearcher(
+                $"SELECT Name FROM Win32_Printer WHERE Name = '{printerName.Replace("'", "''")}'");
+
+            foreach (ManagementObject printerObj in searcher.Get())
+            {
+                printerFound = true;
+                break;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Advertencia al verificar impresora via WMI");
+        }
+
+        if (!printerFound)
+        {
+            var installedPrinters = GetPrinterNames();
+            printerFound = installedPrinters.Any(p => p.Equals(printerName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (!printerFound)
+        {
+            _logger.LogError("❌ Impresora no encontrada: {Printer}", printerName);
+            _logger.LogInformation("Impresoras disponibles: {Printers}", string.Join(", ", GetPrinterNames()));
+            throw new ArgumentException($"Impresora '{printerName}' no encontrada");
+        }
+
+        _logger.LogInformation("✅ Impresora encontrada: {Printer}", printerName);
+    }
+
+    /// <summary>Nombre de impresora Windows típico: contiene "Zebra" y modelo 2824.</summary>
+    private static bool IsZebraLp2824Printer(string printerName)
+    {
+        if (!printerName.Contains("zebra", StringComparison.OrdinalIgnoreCase))
+            return false;
+        return printerName.Contains("2824", StringComparison.OrdinalIgnoreCase);
     }
 
     private string? FindGhostscript()

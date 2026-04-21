@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\Desktop\\New folder (2)\\printer_api\\LitePrintApi\\LitePrintApi.csproj": {}
+    "/Users/user/Desktop/Dev/printer_api/printer_api/LitePrintApi/LitePrintApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\Desktop\\New folder (2)\\printer_api\\LitePrintApi\\LitePrintApi.csproj": {
+    "/Users/user/Desktop/Dev/printer_api/printer_api/LitePrintApi/LitePrintApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Desktop\\New folder (2)\\printer_api\\LitePrintApi\\LitePrintApi.csproj",
+        "projectUniqueName": "/Users/user/Desktop/Dev/printer_api/printer_api/LitePrintApi/LitePrintApi.csproj",
         "projectName": "LitePrintApi",
-        "projectPath": "C:\\Users\\User\\Desktop\\New folder (2)\\printer_api\\LitePrintApi\\LitePrintApi.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Desktop\\New folder (2)\\printer_api\\LitePrintApi\\obj\\",
+        "projectPath": "/Users/user/Desktop/Dev/printer_api/printer_api/LitePrintApi/LitePrintApi.csproj",
+        "packagesPath": "/Users/user/.nuget/packages/",
+        "outputPath": "/Users/user/Desktop/Dev/printer_api/printer_api/LitePrintApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/user/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0-windows"
@@ -74,6 +74,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[6.0.36, 6.0.36]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -85,12 +91,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.428\\RuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "win-x64": {
-          "#import": []
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.428/RuntimeIdentifierGraph.json"
         }
       }
     }

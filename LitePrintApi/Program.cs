@@ -248,6 +248,43 @@ app.MapPost("/print", (PrintRequest request, IPrinterService printerService, ILo
     }
 }).WithTags("Print");
 
+// Impresión ZPL (código Zebra) en RAW — sin PDF ni Ghostscript
+app.MapPost("/print/zpl", (ZplPrintRequest request, IPrinterService printerService, ILogger<Program> logger) =>
+{
+    try
+    {
+        if (string.IsNullOrWhiteSpace(request.Zpl))
+            return Results.BadRequest(new { error = "Zpl is required" });
+
+        if (string.IsNullOrWhiteSpace(request.Printer))
+            return Results.BadRequest(new { error = "Printer is required" });
+
+        if (request.Copies < 1)
+            return Results.BadRequest(new { error = "Copies must be at least 1" });
+
+        logger.LogInformation("Cola ZPL: Printer={Printer}, Copies={Copies}", request.Printer, request.Copies);
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await printerService.PrintZplAsync(request.Printer, request.Zpl, request.Copies);
+                logger.LogInformation("ZPL enviado correctamente en segundo plano");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al enviar ZPL en segundo plano: {Error}", ex.Message);
+            }
+        });
+
+        return Results.Ok(new { message = "ZPL print job queued successfully" });
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = "Internal server error", details = ex.Message }, statusCode: 500);
+    }
+}).WithTags("Print");
+
 static string GetDeviceId()
 {
     try
